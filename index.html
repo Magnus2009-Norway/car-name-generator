@@ -1,243 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Car Spin Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Spin Game V2</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #fff;
+    body { background: #101010; color: #fff; font-family: sans-serif; padding: 20px; }
+    h1 { text-align: center; }
+    button {
+      padding: 10px 20px; font-size: 16px;
+      background: #ff4444; border: none; color: white; border-radius: 5px;
+      cursor: pointer; margin: 10px;
     }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #111c;
-      padding: 10px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .top-bar div {
-      font-size: 18px;
-    }
-    #pointsDisplay {
-      font-weight: bold;
-      font-size: 20px;
-      color: #ffd700;
-    }
-    #sideButtons {
-      position: fixed;
-      right: 20px;
-      top: 100px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 999;
-    }
-    #sideButtons button {
-      padding: 10px;
-      background-color: #ff4c4c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    section {
-      display: none;
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-      text-align: center;
-    }
-    section.active {
-      display: block;
-    }
-    .rarity-item { margin: 5px 0; }
-    #carImage {
-      max-width: 300px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-    #chatBox {
-      position: fixed;
-      bottom: 10px;
-      right: 20px;
-      background: rgba(0,0,0,0.4);
-      width: 250px;
-      padding: 10px;
-      border-radius: 10px;
-    }
-    #chatMessages {
-      height: 150px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-    #chatMessages div {
-      margin-bottom: 5px;
-    }
-    #chatInput {
-      width: 100%;
-      padding: 5px;
+    #pointsDisplay { font-size: 18px; text-align: center; margin-bottom: 20px; color: #ffd700; }
+    #carCard { margin-top: 30px; background: #222; padding: 20px; border-radius: 10px; text-align: center; }
+    #carImage { width: 300px; border-radius: 10px; margin-top: 10px; }
+    #notification {
+      position: fixed; bottom: 10px; left: 50%;
+      transform: translateX(-50%);
+      background: #e63946; color: white;
+      padding: 10px 20px; border-radius: 5px; display: none;
     }
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div id="onlineNow">👥 Online now: 1</div>
-    <div id="usernameDisplay"></div>
-    <div id="pointsDisplay">💰 Points: 0</div>
+  <h1>🚗 Car Spin Game V2</h1>
+  <div id="pointsDisplay">Points: 0</div>
+  <div style="text-align:center;">
+    <button onclick="spinCar()">🎰 Spin</button>
+    <button onclick="upgradeChance()">🛒 Upgrade Lucky Chance</button>
   </div>
-
-  <div id="sideButtons">
-    <button onclick="showSection('main')">🏠 Home</button>
-    <button onclick="showSection('shop')">🛍️ Shop</button>
-    <button onclick="showSection('leaderboard')">🏆 Leaderboard</button>
+  <div id="carCard" style="display:none;">
+    <h2 id="carName">?</h2>
+    <p id="carRarity"></p>
+    <img id="carImage" src="" alt="Car Image">
   </div>
-
-  <section id="main" class="active">
-    <h1>🚗 Car Spin Generator</h1>
-    <button onclick="spinCar()">🎰 Spin Car</button>
-    <div id="carResult"></div>
-  </section>
-
-  <section id="shop">
-    <h2>🛒 Shop</h2>
-    <div id="shopItems"></div>
-    <p>Current Lucky Chance: <span id="luckyChance">1.0x</span></p>
-  </section>
-
-  <section id="leaderboard">
-    <h2>🏆 Leaderboard</h2>
-    <table>
-      <thead><tr><th>#</th><th>Name</th><th>Points</th></tr></thead>
-      <tbody id="leaderboardTable"></tbody>
-    </table>
-  </section>
-
-  <div id="chatBox">
-    <div id="chatMessages"></div>
-    <input id="chatInput" placeholder="Si noe..." onkeydown="sendChat(event)">
-  </div>
+  <div id="notification"></div>
 
   <script>
-    let username = localStorage.getItem("username") || prompt("Ditt brukernavn:") || "Guest" + Math.floor(Math.random()*1000);
-    localStorage.setItem("username", username);
-    document.getElementById("usernameDisplay").innerText = "👤 " + username;
-
-    let points = parseInt(localStorage.getItem("points")) || 0;
-    let lucky = parseFloat(localStorage.getItem("lucky")) || 1.0;
-    let shopLevel = parseInt(localStorage.getItem("shopLevel")) || 0;
-
-    const rarityPool = [
-      { name: "Common", weight: 50, points: 1 },
-      { name: "Uncommon", weight: 25, points: 2 },
-      { name: "Epic", weight: 12, points: 5 },
-      { name: "Legendary", weight: 6, points: 10 },
-      { name: "Mythic", weight: 3, points: 25 },
-      { name: "Exotic", weight: 2, points: 50 },
-      { name: "Hacker", weight: 1, points: 100 },
-      { name: "???", weight: 0.2, points: 500 }
-    ];
-
     const cars = [
-      { name: "Bugatti Chiron", img: "https://cdn.motor1.com/images/mgl/qWj2E/s3/bugatti-chiron.jpg", rarity: "Exotic" },
-      { name: "Koenigsegg Jesko", img: "https://cdn.motor1.com/images/mgl/L1kpP/s3/koenigsegg-jesko.jpg", rarity: "Hacker" },
-      { name: "Mazda RX-7", img: "https://cdn.motor1.com/images/mgl/nV9zO/s3/mazda-rx-7.jpg", rarity: "Legendary" },
-      { name: "Mystery Car", img: "https://cdn.motor1.com/images/mgl/1xR8g/s1/mystery-car.jpg", rarity: "???" }
+      { name: "Toyota Supra", rarity: "Common", image: "https://upload.wikimedia.org/wikipedia/commons/f/f2/2019_Toyota_Supra_3.0_Front.jpg", points: 1 },
+      { name: "Honda Civic", rarity: "Common", image: "https://upload.wikimedia.org/wikipedia/commons/3/35/2022_Honda_Civic_Sport.jpg", points: 1 },
+      { name: "Mazda RX-7", rarity: "Legendary", image: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mazda_RX-7.jpg", points: 10 },
+      { name: "Bugatti Chiron", rarity: "Exotic", image: "https://cdn.motor1.com/images/mgl/qWj2E/s3/bugatti-chiron.jpg", points: 25 },
+      { name: "Mystery ???", rarity: "???", image: "https://cdn.motor1.com/images/mgl/1xR8g/s1/mystery-car.jpg", points: 100 }
     ];
 
-    function showSection(id) {
-      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+    let points = 0;
+    let luckyChance = 1.0;
+    let upgradeCost = 100;
+
+    function updatePoints() {
+      document.getElementById("pointsDisplay").innerText = "Points: " + points + " | Lucky Chance: " + luckyChance.toFixed(1) + "x";
+    }
+
+    function showNotification(msg) {
+      const note = document.getElementById("notification");
+      note.innerText = msg;
+      note.style.display = "block";
+      setTimeout(() => { note.style.display = "none"; }, 3000);
     }
 
     function spinCar() {
-      const result = document.getElementById("carResult");
-      const weighted = rarityPool.flatMap(r => Array(Math.round(r.weight * lucky)).fill(r));
-      const chosen = weighted[Math.floor(Math.random()*weighted.length)];
-      const car = cars.find(c => c.rarity === chosen.name) || { name: "Random Car", img: "", rarity: chosen.name };
-      points += chosen.points;
-      localStorage.setItem("points", points);
-      updatePoints();
-      result.innerHTML = `<h2>${car.name}</h2><p style='color:orange;'>${car.rarity}</p><img src='${car.img}' id='carImage'>`;
-      if (car.rarity === "???") {
-        postChat(`🔥 ${username} pulled ??? rarity! 🔥`);
-      }
-      updateLeaderboard();
-    }
+      const card = document.getElementById("carCard");
+      const name = document.getElementById("carName");
+      const rarity = document.getElementById("carRarity");
+      const image = document.getElementById("carImage");
+      card.style.display = "block";
+      name.innerText = "Spinning...";
+      rarity.innerText = "";
+      image.src = "";
 
-    function updatePoints() {
-      document.getElementById("pointsDisplay").innerText = `💰 Points: ${points}`;
-      document.getElementById("luckyChance").innerText = `${lucky.toFixed(1)}x`;
-    }
+      const interval = setInterval(() => {
+        const rand = cars[Math.floor(Math.random() * cars.length)];
+        name.innerText = rand.name;
+      }, 100);
 
-    function generateShop() {
-      const shop = document.getElementById("shopItems");
-      shop.innerHTML = "";
-      const cost = Math.floor(100 * Math.pow(1.5, shopLevel));
-      const next = document.createElement("button");
-      next.innerText = `+0.1x Lucky Chance → ${cost} points`;
-      next.onclick = () => {
-        if (points >= cost) {
-          points -= cost;
-          lucky += 0.1;
-          shopLevel++;
-          localStorage.setItem("points", points);
-          localStorage.setItem("lucky", lucky);
-          localStorage.setItem("shopLevel", shopLevel);
-          updatePoints();
-          generateShop();
-        } else {
-          alert("Du har ikke nok poeng!");
+      setTimeout(() => {
+        clearInterval(interval);
+        const finalCar = cars[Math.floor(Math.random() * cars.length * luckyChance) % cars.length];
+        name.innerText = finalCar.name;
+        rarity.innerText = finalCar.rarity;
+        image.src = finalCar.image;
+        points += finalCar.points;
+        updatePoints();
+        if (finalCar.rarity === "???") {
+          showNotification("🔥 Someone pulled the ultra-rare ??? car!");
         }
-      };
-      shop.appendChild(next);
+      }, 2000);
     }
 
-    function updateLeaderboard() {
-      let data = JSON.parse(localStorage.getItem("leaderboard")) || [];
-      let user = data.find(d => d.name === username);
-      if (user) user.points = points; else data.push({ name: username, points });
-      data.sort((a,b)=>b.points - a.points);
-      localStorage.setItem("leaderboard", JSON.stringify(data));
-      const table = document.getElementById("leaderboardTable");
-      table.innerHTML = data.slice(0, 10).map((u,i)=>`<tr><td>${i+1}</td><td>${u.name}</td><td>${u.points}</td></tr>`).join('');
-    }
-
-    function sendChat(e) {
-      if (e.key === "Enter") {
-        const val = e.target.value.trim();
-        if (!val) return;
-        postChat(`${username}: ${val}`);
-        e.target.value = "";
+    function upgradeChance() {
+      if (points >= upgradeCost) {
+        points -= upgradeCost;
+        luckyChance += 0.1;
+        upgradeCost = Math.floor(upgradeCost * 1.5);
+        updatePoints();
+        showNotification("🔼 Lucky Chance upgraded!");
+      } else {
+        showNotification("🚫 Not enough points to upgrade.");
       }
     }
 
-    function postChat(msg) {
-      const chat = document.getElementById("chatMessages");
-      const div = document.createElement("div");
-      div.textContent = msg;
-      if (msg.includes("???")) div.style.color = "red";
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    setInterval(() => {
-      document.getElementById("onlineNow").innerText = `👥 Online now: ${Math.floor(Math.random()*10)+1}`;
-    }, 4000);
-
-    // Init
     updatePoints();
-    updateLeaderboard();
-    generateShop();
   </script>
 </body>
 </html>
-</body>
-</html>
+

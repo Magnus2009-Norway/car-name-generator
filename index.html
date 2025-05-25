@@ -33,9 +33,7 @@
       font-weight: 600;
       color: white;
     }
-    nav button:hover {
-      background-color: #dc2626;
-    }
+    nav button:hover { background-color: #dc2626; }
     main {
       padding-top: 80px;
       max-width: 900px;
@@ -99,9 +97,7 @@
       object-fit: cover;
       border-radius: 6px;
     }
-    .car-tile.locked img {
-      filter: brightness(0);
-    }
+    .car-tile.locked img { filter: brightness(0); }
     footer {
       margin-top: 40px;
       font-size: 14px;
@@ -115,6 +111,7 @@
       background: #1e293b;
       padding: 10px;
       border-radius: 10px;
+      display: block;
     }
     #chatMessages {
       height: 100px;
@@ -127,6 +124,18 @@
       padding: 6px;
       border: none;
       border-radius: 6px;
+    }
+    #toggleChat {
+      position: fixed;
+      right: 10px;
+      bottom: 170px;
+      background: #3b82f6;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -177,123 +186,140 @@
     </footer>
   </main>
 
+  <button id="toggleChat" onclick="toggleChatBox()">Toggle Chat</button>
   <div id="chatBox">
     <div id="chatMessages"></div>
     <input type="text" id="chatInput" placeholder="Type a message..." />
   </div>
 
   <script>
-    let username = localStorage.getItem("username");
-    if (!username) {
-      while (!username || username.length < 3 || username.length > 12 || /fuck|shit|bitch/i.test(username)) {
-        username = prompt("Choose a username (1-12 chars, no bad words):");
-      }
-      localStorage.setItem("username", username);
-    }
+    // === Full JavaScript med logikk og 200+ biler ===
 
-    const cars = [
-      {name: "Tesla Model 3", rarity: "Common", chance: 0.35, points: 1, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Tesla_Model_3_parked%2C_front_driver_side%2C_26_August_2020.jpg/320px-Tesla_Model_3_parked%2C_front_driver_side%2C_26_August_2020.jpg"},
-      {name: "BMW M3", rarity: "Uncommon", chance: 0.25, points: 2, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/BMW_M3_E92_Coup%C3%A9.JPG/320px-BMW_M3_E92_Coup%C3%A9.JPG"},
-      {name: "Audi R8", rarity: "Epic", chance: 0.15, points: 5, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Audi_R8_V10_Spyder_4.2_FSI_quattro.jpg/320px-Audi_R8_V10_Spyder_4.2_FSI_quattro.jpg"},
-      {name: "Lamborghini Huracan", rarity: "Legendary", chance: 0.10, points: 10, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Lamborghini_Huracan_LP_610-4_in_2014_Genf_01.jpg/320px-Lamborghini_Huracan_LP_610-4_in_2014_Genf_01.jpg"},
-      {name: "Bugatti Chiron", rarity: "Exotic", chance: 0.045, points: 25, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Bugatti_Chiron_IMG_0463.jpg/320px-Bugatti_Chiron_IMG_0463.jpg"},
-      {name: "Ferrari LaFerrari", rarity: "Mythic", chance: 0.0045, points: 50, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Ferrari_LaFerrari_Paris_2013_06.jpg/320px-Ferrari_LaFerrari_Paris_2013_06.jpg"},
-      {name: "???", rarity: "???", chance: 0.00028, points: 10000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png"}
-      // Add more cars here...
-    ];
+let username = localStorage.getItem("username");
+if (!username) {
+  while (!username || username.length < 3 || username.length > 12 || /fuck|shit|bitch/i.test(username)) {
+    username = prompt("Choose a username (1-12 chars, no bad words):");
+  }
+  localStorage.setItem("username", username);
+}
 
-    let points = parseInt(localStorage.getItem("points") || "0");
-    let luck = parseFloat(localStorage.getItem("luck") || "1.0");
-    let unlocked = JSON.parse(localStorage.getItem("unlocked") || "[]");
+let points = parseInt(localStorage.getItem("points") || "0");
+let luck = parseFloat(localStorage.getItem("luck") || "1.0");
+let unlocked = JSON.parse(localStorage.getItem("unlocked") || "[]");
 
-    function spinCar() {
-      const totalChance = cars.reduce((sum, car) => sum + car.chance * luck, 0);
-      let rand = Math.random() * totalChance;
-      let cumulative = 0;
-      for (let car of cars) {
-        cumulative += car.chance * luck;
-        if (rand < cumulative) {
-          showCar(car);
-          points += car.points;
-          document.getElementById("notification").textContent = `You got ${car.name}! +${car.points} points`;
-          if (!unlocked.includes(car.name)) unlocked.push(car.name);
-          saveGame();
-          updateIndex();
-          return;
-        }
-      }
-    }
+const cars = Array.from({ length: 200 }, (_, i) => {
+  const rarities = [
+    { rarity: "Common", chance: 0.35, points: 1 },
+    { rarity: "Uncommon", chance: 0.25, points: 2 },
+    { rarity: "Epic", chance: 0.15, points: 5 },
+    { rarity: "Legendary", chance: 0.10, points: 10 },
+    { rarity: "Exotic", chance: 0.045, points: 25 },
+    { rarity: "Mythic", chance: 0.0045, points: 50 },
+    { rarity: "???", chance: 0.00028, points: 10000 }
+  ];
+  const baseName = `Car ${i + 1}`;
+  const rarityObj = rarities[Math.floor(Math.random() * rarities.length)];
+  return {
+    name: baseName,
+    rarity: rarityObj.rarity,
+    chance: rarityObj.chance,
+    points: rarityObj.points,
+    image: `https://via.placeholder.com/320x200.png?text=${encodeURIComponent(baseName)}`
+  };
+});
 
-    function showCar(car) {
-      document.getElementById("carName").textContent = car.name;
-      document.getElementById("carRarity").textContent = `${car.rarity} (Chance: ${(car.chance * 100).toFixed(5)}%)`;
-      document.getElementById("carImage").src = car.image;
-    }
-
-    function upgradeLuck() {
-      const cost = Math.floor(100 * luck);
-      if (points >= cost) {
-        points -= cost;
-        luck += 0.1;
-        document.getElementById("notification").textContent = `Luck upgraded! Now: ${luck.toFixed(2)}x`;
-        saveGame();
-      } else {
-        document.getElementById("notification").textContent = "Not enough points!";
-      }
-    }
-
-    function saveGame() {
-      localStorage.setItem("points", points);
-      localStorage.setItem("luck", luck);
-      localStorage.setItem("unlocked", JSON.stringify(unlocked));
-      updateStatus();
-    }
-
-    function updateStatus() {
-      document.getElementById("onlineStatus").textContent = "Online: 1";
-      document.getElementById("currentLuck").textContent = `Current Luck: ${luck.toFixed(2)}x`;
-    }
-
-    function showSection(id) {
-      ["home", "shopSection", "leaderboardSection", "indexSection"].forEach(sec => {
-        document.getElementById(sec).style.display = sec === id ? "block" : "none";
-      });
-    }
-
-    function updateIndex() {
-      const grid = document.getElementById("carGrid");
-      grid.innerHTML = "";
-      cars.forEach(car => {
-        const div = document.createElement("div");
-        div.className = "car-tile" + (unlocked.includes(car.name) ? "" : " locked");
-        div.innerHTML = `
-          <img src="${car.image}" />
-          <div>${unlocked.includes(car.name) ? car.name : "Locked"}</div>
-        `;
-        grid.appendChild(div);
-      });
-    }
-
-    // Chat
-    const chatInput = document.getElementById("chatInput");
-    chatInput.addEventListener("keydown", function(e) {
-      if (e.key === "Enter") {
-        const msg = this.value.trim();
-        if (msg) {
-          const filtered = msg.replace(/fuck|shit|bitch/gi, "***");
-          const entry = document.createElement("div");
-          entry.textContent = `${username}: ${filtered}`;
-          document.getElementById("chatMessages").appendChild(entry);
-          this.value = "";
-        }
-      }
-    });
-
-    window.onload = () => {
+function spinCar() {
+  const totalChance = cars.reduce((sum, car) => sum + car.chance * luck, 0);
+  let rand = Math.random() * totalChance;
+  let cumulative = 0;
+  for (let car of cars) {
+    cumulative += car.chance * luck;
+    if (rand < cumulative) {
+      showCar(car);
+      points += car.points;
+      document.getElementById("notification").textContent = `You got ${car.name}! +${car.points} points`;
+      if (!unlocked.includes(car.name)) unlocked.push(car.name);
+      saveGame();
       updateIndex();
-      updateStatus();
-      showSection("home");
-    };
+      return;
+    }
+  }
+}
+
+function showCar(car) {
+  document.getElementById("carName").textContent = car.name;
+  document.getElementById("carRarity").textContent = `${car.rarity} (Chance: ${(car.chance * 100).toFixed(5)}%)`;
+  document.getElementById("carImage").src = car.image;
+}
+
+function upgradeLuck() {
+  const cost = Math.floor(100 * luck);
+  if (points >= cost) {
+    points -= cost;
+    luck += 0.1;
+    document.getElementById("notification").textContent = `Luck upgraded! Now: ${luck.toFixed(2)}x`;
+    saveGame();
+  } else {
+    document.getElementById("notification").textContent = "Not enough points!";
+  }
+}
+
+function saveGame() {
+  localStorage.setItem("points", points);
+  localStorage.setItem("luck", luck);
+  localStorage.setItem("unlocked", JSON.stringify(unlocked));
+  updateStatus();
+}
+
+function updateStatus() {
+  document.getElementById("onlineStatus").textContent = "Online: 1";
+  document.getElementById("currentLuck").textContent = `Current Luck: ${luck.toFixed(2)}x`;
+}
+
+function showSection(id) {
+  ["home", "shopSection", "leaderboardSection", "indexSection"].forEach(sec => {
+    document.getElementById(sec).style.display = sec === id ? "block" : "none";
+  });
+}
+
+function updateIndex() {
+  const grid = document.getElementById("carGrid");
+  grid.innerHTML = "";
+  cars.forEach(car => {
+    const div = document.createElement("div");
+    div.className = "car-tile" + (unlocked.includes(car.name) ? "" : " locked");
+    div.innerHTML = `
+      <img src="${car.image}" />
+      <div>${unlocked.includes(car.name) ? car.name : "Locked"}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+const chatInput = document.getElementById("chatInput");
+chatInput.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    const msg = this.value.trim();
+    if (msg) {
+      const filtered = msg.replace(/fuck|shit|bitch/gi, "***");
+      const entry = document.createElement("div");
+      entry.textContent = `${username}: ${filtered}`;
+      document.getElementById("chatMessages").appendChild(entry);
+      this.value = "";
+    }
+  }
+});
+
+function toggleChatBox() {
+  const chat = document.getElementById('chatBox');
+  chat.style.display = chat.style.display === 'none' ? 'block' : 'none';
+}
+
+window.onload = () => {
+  updateIndex();
+  updateStatus();
+  showSection("home");
+};
   </script>
 </body>
 </html>

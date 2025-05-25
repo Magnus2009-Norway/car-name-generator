@@ -3,79 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultimate Car Name Generator</title>
+  <title>Ultimate Car Spinner</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #141e30, #243b55);
       color: #fff;
-      padding: 30px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+    .top-bar {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .top-bar div {
+      margin: 0 15px;
+    }
     h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
+      margin-top: 20px;
     }
     button {
-      padding: 15px 30px;
-      font-size: 18px;
-      background-color: #ff4c4c;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 8px;
       border: none;
-      border-radius: 10px;
-      cursor: pointer;
+      background-color: #ff4c4c;
       color: white;
-      margin-top: 20px;
-      transition: 0.3s;
+      cursor: pointer;
     }
     button:hover {
-      background-color: #ff1c1c;
+      background-color: #e43e3e;
     }
-    #carCard {
-      margin-top: 40px;
+    #carCard, #shop, #leaderboard {
+      margin-top: 20px;
       padding: 20px;
       background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
       text-align: center;
     }
-    #carName {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
-    #rarity {
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
     #carImage {
-      width: 300px;
-      height: auto;
+      width: 100%;
+      max-width: 400px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      margin-top: 10px;
     }
     #rarityList {
-      margin-top: 50px;
-      background-color: rgba(0,0,0,0.4);
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
-    }
-    #rarityList h2 {
-      margin-bottom: 10px;
+      margin-top: 30px;
+      text-align: left;
     }
     .rarity-item {
-      margin: 5px 0;
+      margin: 5px;
+    }
+    .shop-item {
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      margin-top: 10px;
+      color: white;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #555;
     }
   </style>
 </head>
 <body>
-  <h1>🚘 Ultimate Car Name Generator</h1>
-  <p>Click the button to spin and reveal a random car!</p>
+  <div class="top-bar">
+    <div id="onlineNow">👥 Online now: ? players</div>
+    <div id="usernameDisplay"></div>
+    <div id="pointsDisplay">💰 Points: 0</div>
+  </div>
+
+  <h1>🚗 Car Spin Generator</h1>
   <button onclick="spinCar()">🎰 Spin Car</button>
 
   <div id="carCard" style="display:none;">
     <div id="carName"></div>
-    <div id="rarity"></div>
+    <div id="carRarity"></div>
     <img id="carImage" src="" alt="Car Image">
   </div>
 
@@ -90,56 +107,138 @@
     <div class="rarity-item" style="color:#00ff00">Hacker = 100 points</div>
   </div>
 
-  <script>
-    const cars = [
-      { name: "Toyota Supra", img: "https://upload.wikimedia.org/wikipedia/commons/f/f2/2019_Toyota_Supra_3.0_Front.jpg", rarity: "Epic" },
-      { name: "Honda Civic", img: "https://upload.wikimedia.org/wikipedia/commons/3/35/2022_Honda_Civic_Sport_in_Sonic_Gray_Pearl%2C_Front_Left%2C_12-24-2021.jpg", rarity: "Common" },
-      { name: "Bugatti Chiron", img: "https://upload.wikimedia.org/wikipedia/commons/9/96/Bugatti_Chiron_IMG_0305.jpg", rarity: "Exotic" },
-      { name: "Ferrari F40", img: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Ferrari_F40_2.jpg", rarity: "Legendary" },
-      { name: "Nissan GT-R", img: "https://upload.wikimedia.org/wikipedia/commons/d/d1/Nissan_GT-R_50th_Anniversary_Edition_Genf_2019_1Y7A5666.jpg", rarity: "Uncommon" },
-      { name: "Lamborghini Aventador", img: "https://upload.wikimedia.org/wikipedia/commons/5/58/Lamborghini_Aventador_LP_700-4_%288266863182%29.jpg", rarity: "Mythic" },
-      { name: "Tesla Model 3", img: "https://upload.wikimedia.org/wikipedia/commons/4/44/2019_Tesla_Model_3_Performance_AWD_Front.jpg", rarity: "Common" },
-      { name: "Koenigsegg Jesko", img: "https://upload.wikimedia.org/wikipedia/commons/c/c2/Koenigsegg_Jesko_IMG_0086.jpg", rarity: "Hacker" },
-      { name: "McLaren 720S", img: "https://upload.wikimedia.org/wikipedia/commons/1/1b/McLaren_720S_Genf_2018.jpg", rarity: "Exotic" },
-      { name: "Mazda RX-7", img: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mazda_RX-7_Type_RB_Bathurst_R_Mazda_Museum.jpg", rarity: "Legendary" }
-    ];
+  <div id="shop">
+    <h2>🛒 Shop</h2>
+    <div class="shop-item"><button onclick="buyLucky(1.1, 100)">Lucky Chance 1.1x – 100 points</button></div>
+    <div class="shop-item"><button onclick="buyLucky(1.2, 250)">Lucky Chance 1.2x – 250 points</button></div>
+    <div class="shop-item"><button onclick="buyLucky(1.3, 500)">Lucky Chance 1.3x – 500 points</button></div>
+    <div class="shop-item"><button onclick="buyLucky(1.4, 1000)">Lucky Chance 1.4x – 1000 points</button></div>
+    <div class="shop-item"><button onclick="buyLucky(1.5, 2000)">Lucky Chance 1.5x – 2000 points</button></div>
+    <div class="shop-item">Current Lucky Chance: <span id="luckyChance">1.0x</span></div>
+    <div><button onclick="scrollToLeaderboard()">🏆 View Leaderboard</button></div>
+  </div>
 
+  <div id="leaderboard">
+    <h2>🏆 Leaderboard</h2>
+    <table>
+      <thead><tr><th>#</th><th>Name</th><th>Points</th></tr></thead>
+      <tbody id="leaderboardTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const rarityPoints = {
+      Common: 1,
+      Uncommon: 2,
+      Epic: 5,
+      Legendary: 10,
+      Mythic: 25,
+      Exotic: 50,
+      Hacker: 100
+    };
     const rarityColors = {
-      "Common": "#ccc",
-      "Uncommon": "#76c7c0",
-      "Epic": "#a64ca6",
-      "Legendary": "#eab308",
-      "Mythic": "#f43f5e",
-      "Exotic": "#0ea5e9",
-      "Hacker": "#00ff00"
+      Common: "#ccc",
+      Uncommon: "#76c7c0",
+      Epic: "#a64ca6",
+      Legendary: "#eab308",
+      Mythic: "#f43f5e",
+      Exotic: "#0ea5e9",
+      Hacker: "#00ff00"
     };
 
+    let cars = [
+      { name: "Toyota Supra", img: "https://upload.wikimedia.org/wikipedia/commons/f/f2/2019_Toyota_Supra_3.0_Front.jpg", rarity: "Epic" },
+      { name: "Honda Civic", img: "https://upload.wikimedia.org/wikipedia/commons/3/35/2022_Honda_Civic_Sport.jpg", rarity: "Common" },
+      { name: "Bugatti Chiron", img: "https://upload.wikimedia.org/wikipedia/commons/9/96/Bugatti_Chiron_IMG_0305.jpg", rarity: "Exotic" },
+      { name: "Koenigsegg Jesko", img: "https://upload.wikimedia.org/wikipedia/commons/c/c2/Koenigsegg_Jesko_IMG_0086.jpg", rarity: "Hacker" },
+      { name: "Mazda RX-7", img: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mazda_RX-7.jpg", rarity: "Legendary" }
+    ];
+
+    let username = localStorage.getItem("username");
+    if (!username) {
+      username = prompt("Velg brukernavn til leaderboarden:");
+      if (!username || username.trim() === "") {
+        username = "Guest" + Math.floor(Math.random() * 9999);
+      }
+      localStorage.setItem("username", username);
+    }
+    document.getElementById("usernameDisplay").innerText = "👤 " + username;
+
+    let points = parseInt(localStorage.getItem("points")) || 0;
+    let lucky = parseFloat(localStorage.getItem("lucky")) || 1.0;
+    document.getElementById("pointsDisplay").innerText = `💰 Points: ${points}`;
+    document.getElementById("luckyChance").innerText = `${lucky.toFixed(1)}x`;
+
     function spinCar() {
-      const carCard = document.getElementById("carCard");
       const carName = document.getElementById("carName");
       const carImage = document.getElementById("carImage");
-      const rarity = document.getElementById("rarity");
+      const carRarity = document.getElementById("carRarity");
+      const carCard = document.getElementById("carCard");
 
       carCard.style.display = "block";
       carName.innerText = "Spinning...";
       carImage.src = "";
-      rarity.innerText = "";
+      carRarity.innerText = "";
 
-      const spinInterval = setInterval(() => {
-        const randomCar = cars[Math.floor(Math.random() * cars.length)];
-        carName.innerText = randomCar.name;
+      let spins = 0;
+      const interval = setInterval(() => {
+        const random = cars[Math.floor(Math.random() * cars.length)];
+        carName.innerText = random.name;
       }, 100);
 
       setTimeout(() => {
-        clearInterval(spinInterval);
-        const finalCar = cars[Math.floor(Math.random() * cars.length)];
+        clearInterval(interval);
+        const finalCar = cars[Math.floor(Math.random() * cars.length * lucky) % cars.length];
         carName.innerText = finalCar.name;
         carImage.src = finalCar.img;
-        carImage.alt = finalCar.name;
-        rarity.innerText = finalCar.rarity;
-        rarity.style.color = rarityColors[finalCar.rarity] || "white";
+        carRarity.innerText = finalCar.rarity;
+        carRarity.style.color = rarityColors[finalCar.rarity];
+        points += rarityPoints[finalCar.rarity];
+        localStorage.setItem("points", points);
+        document.getElementById("pointsDisplay").innerText = `💰 Points: ${points}`;
+        updateLeaderboard();
       }, 2000);
     }
+
+    function buyLucky(multiplier, cost) {
+      if (points >= cost) {
+        points -= cost;
+        lucky = multiplier;
+        localStorage.setItem("points", points);
+        localStorage.setItem("lucky", lucky);
+        document.getElementById("pointsDisplay").innerText = `💰 Points: ${points}`;
+        document.getElementById("luckyChance").innerText = `${lucky.toFixed(1)}x`;
+      } else {
+        alert("Ikke nok poeng!");
+      }
+    }
+
+    function updateLeaderboard() {
+      let data = JSON.parse(localStorage.getItem("leaderboard")) || [];
+      let found = data.find(x => x.name === username);
+      if (found) found.points = points;
+      else data.push({ name: username, points });
+      data.sort((a, b) => b.points - a.points);
+      localStorage.setItem("leaderboard", JSON.stringify(data));
+
+      const table = document.getElementById("leaderboardTable");
+      table.innerHTML = "";
+      data.slice(0, 100).forEach((entry, index) => {
+        const row = `<tr><td>${index + 1}</td><td>${entry.name}</td><td>${entry.points}</td></tr>`;
+        table.innerHTML += row;
+      });
+    }
+
+    function scrollToLeaderboard() {
+      document.getElementById("leaderboard").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    setInterval(() => {
+      const fakeOnline = Math.floor(Math.random() * 20) + 1;
+      document.getElementById("onlineNow").innerText = `👥 Online now: ${fakeOnline} players`;
+    }, 5000);
+
+    updateLeaderboard();
   </script>
 </body>
 </html>

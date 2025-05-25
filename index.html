@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!-- FULL VERSJON AV SPILLET: Car Spin Madness PRO -->
-<!-- Magnus, her kommer hele den rensede og fungerende versjonen -->
-<!-- Koden er lang og må sendes i deler. Del 1 kommer nå, si "neste" for del 2. -->
-<!-- Starter med <html> og <head> -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -179,269 +175,24 @@
   </div>
 
   <footer>
-    <p>Support our socials!</p>
-    <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
-    </a>
-    <a href="https://www.tiktok.com/@turbotales02" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" />
-    </a>
+    <p style="text-align: center; font-size: 16px;">Support our socials!</p>
+    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
+      <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" style="width: 40px; height: 40px;" />
+      </a>
+      <a href="https://www.tiktok.com/@turbotales02" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" style="width: 40px; height: 40px;" />
+      </a>
+    </div>
   </footer>
-<script>
-const cars = [
-  { name: "Toyota Supra", rarity: "Common", chance: 0.35, points: 1, image: "https://cdn.pixabay.com/photo/2021/09/06/14/43/toyota-supra-6601290_1280.jpg" },
-  { name: "BMW M5", rarity: "Uncommon", chance: 0.2, points: 2, image: "https://cdn.pixabay.com/photo/2020/04/22/08/04/bmw-5073132_1280.jpg" },
-  { name: "Audi R8", rarity: "Epic", chance: 0.15, points: 5, image: "https://cdn.pixabay.com/photo/2020/07/30/13/57/audi-5451212_1280.jpg" },
-  { name: "Lamborghini Huracan", rarity: "Legendary", chance: 0.1, points: 10, image: "https://cdn.pixabay.com/photo/2020/10/15/12/14/car-5655729_1280.jpg" },
-  { name: "Bugatti Veyron", rarity: "Exotic", chance: 0.045, points: 25, image: "https://cdn.pixabay.com/photo/2018/01/03/11/09/bugatti-3053271_1280.jpg" },
-  { name: "Ferrari SF90", rarity: "Mythic", chance: 0.015, points: 50, image: "https://cdn.pixabay.com/photo/2021/06/28/21/42/ferrari-6370609_1280.jpg" },
-  { name: "???", rarity: "???", chance: 0.00028, points: 10000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png" }
-];
-
-let points = 0;
-let luck = 1.0;
-let rebirthTokens = 0;
-let chatEnabled = true;
-let unlockedCars = [];
-
-const bgm = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_f61df72d96.mp3?filename=slow-relaxing-background-110109.mp3");
-bgm.volume = 0.1;
-bgm.loop = true;
-bgm.play();
-
-function setVolume(v) {
-  bgm.volume = parseFloat(v);
-}
-
-function showSection(id) {
-  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-document.body.addEventListener("keydown", e => {
-  if (e.code === "Space") {
-    e.preventDefault();
-    spinCar();
-  }
-});
-
-function getUsername() {
-  let name = localStorage.getItem("username");
-  while (!name || !isCleanName(name)) {
-    name = prompt("Enter a username (1-12 letters, no bad words):").trim().substring(0, 12);
-  }
-  localStorage.setItem("username", name);
-  return name;
-}
-
-function isCleanName(name) {
-  return !filterBadWords(name).includes("*");
-}
-
-const filterBadWords = (txt) => {
-  const banned = ["fuck", "shit", "bitch", "ass", "hell", "nigger", "kuksuger", "hore", "faen", "knull", "hentai"];
-  let result = txt;
-  banned.forEach(word => {
-    const reg = new RegExp(word, "gi");
-    result = result.replace(reg, "*".repeat(word.length));
-  });
-  return result;
-};
-function spinCar() {
-  const spinBtn = document.querySelector('.btn');
-  spinBtn.disabled = true;
-
-  let interval = setInterval(() => {
-    const temp = cars[Math.floor(Math.random() * cars.length)];
-    document.getElementById('carName').textContent = temp.name;
-    document.getElementById('carRarity').textContent = `Rarity: ${temp.rarity}`;
-    document.getElementById('carImage').src = temp.image;
-  }, 100);
-
-  setTimeout(() => {
-    clearInterval(interval);
-    let rand = Math.random() * cars.reduce((acc, c) => acc + c.chance * luck, 0);
-    let acc = 0;
-    let chosen = cars[0];
-
-    for (const car of cars) {
-      acc += car.chance * luck;
-      if (rand < acc) {
-        chosen = car;
-        break;
-      }
-    }
-
-    document.getElementById('carName').textContent = chosen.name;
-    document.getElementById('carRarity').textContent = `Rarity: ${chosen.rarity}`;
-    document.getElementById('carImage').src = chosen.image;
-
-    points += chosen.points;
-    document.getElementById("pointsTop").textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-    showNotification(`You got ${chosen.name}! +${chosen.points} pts`);
-    if (!unlockedCars.includes(chosen.name)) unlockedCars.push(chosen.name);
-    updateCarIndex();
-
-    if (chosen.rarity === "???") throwConfetti();
-
-    spinBtn.disabled = false;
-  }, 2000);
-}
-
-function throwConfetti() {
-  for (let i = 0; i < 25; i++) {
-    const div = document.createElement("div");
-    div.style.position = "fixed";
-    div.style.top = "-10px";
-    div.style.left = Math.random() * 100 + "%";
-    div.style.width = "10px";
-    div.style.height = "10px";
-    div.style.borderRadius = "50%";
-    div.style.background = ["#f00", "#0f0", "#00f", "#ff0", "#0ff"][Math.floor(Math.random() * 5)];
-    div.style.zIndex = 9999;
-    div.style.transition = "top 2s linear";
-    document.body.appendChild(div);
-    setTimeout(() => div.style.top = "100vh", 50);
-    setTimeout(() => div.remove(), 2100);
-  }
-}
-
-function showNotification(text) {
-  const note = document.getElementById('notification');
-  note.textContent = text;
-  note.style.display = 'block';
-  setTimeout(() => note.style.display = 'none', 3000);
-}
-function upgradeLuck() {
-  const cost = Math.floor(100 * luck);
-  if (points >= cost) {
-    points -= cost;
-    luck += 0.1;
-    document.getElementById("pointsTop").textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-    showNotification("Luck upgraded!");
-  } else {
-    showNotification("Not enough points to upgrade luck!");
-  }
-}
-
-function tryRebirth() {
-  if (points >= 100000 && luck >= 5.0) {
-    rebirthTokens += 5;
-    points = 0;
-    luck = 1.0;
-    unlockedCars = [];
-    showNotification("Rebirth complete! +5 Tokens");
-    document.getElementById("rebirthTokens").textContent = `Tokens: ${rebirthTokens}`;
-    document.getElementById("pointsTop").textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-  } else {
-    showNotification("Need 100,000 points and 5.0x Luck to rebirth");
-  }
-}
-
-function buyUpgrade(type) {
-  if (rebirthTokens < 1) return showNotification("Not enough tokens!");
-  rebirthTokens--;
-  document.getElementById("rebirthTokens").textContent = `Tokens: ${rebirthTokens}`;
-
-  if (type === 'bonusPoints') {
-    showNotification("Bonus Points activated!");
-  } else if (type === 'extraSpin') {
-    showNotification("Extra Spin Chance increased!");
-  }
-}
-
-function toggleChat() {
-  chatEnabled = !chatEnabled;
-  document.getElementById("chatBox").style.display = chatEnabled ? 'block' : 'none';
-}
-
-function resetProgress() {
-  if (confirm("Are you sure you want to reset all progress?")) {
-    points = 0;
-    luck = 1.0;
-    unlockedCars = [];
-    rebirthTokens = 0;
-    document.getElementById("rebirthTokens").textContent = `Tokens: 0`;
-    document.getElementById("pointsTop").textContent = `Points: 0 | Luck: 1.00x`;
-    updateCarIndex();
-    showNotification("Progress reset!");
-  }
-}
-
-document.getElementById("chatInput").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    const msg = this.value.trim();
-    if (msg.length > 0) {
-      const user = localStorage.getItem("username") || "Guest";
-      const filtered = filterBadWords(msg);
-      const chat = document.getElementById("chatMessages");
-      const p = document.createElement("p");
-      p.textContent = `${user}: ${filtered}`;
-      chat.appendChild(p);
-      chat.scrollTop = chat.scrollHeight;
-      this.value = "";
-    }
-  }
-});
-function updateCarIndex() {
-  const grid = document.getElementById("indexGrid");
-  grid.innerHTML = "";
-  cars.forEach(car => {
-    const div = document.createElement("div");
-    div.style.background = unlockedCars.includes(car.name) ? "#1e293b" : "#000";
-    div.style.borderRadius = "12px";
-    div.style.padding = "8px";
-    div.style.textAlign = "center";
-    div.style.color = "white";
-    const img = document.createElement("img");
-    img.src = unlockedCars.includes(car.name) ? car.image : "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png";
-    img.style.width = "100%";
-    img.style.borderRadius = "6px";
-    const label = document.createElement("p");
-    label.textContent = unlockedCars.includes(car.name) ? car.name : "???";
-    label.style.margin = "0";
-    div.appendChild(img);
-    div.appendChild(label);
-    grid.appendChild(div);
-  });
-}
-
-const leaderboard = [];
-const timePlayedMap = {};
-const luckMap = {};
-
-let secondsPlayed = 0;
-setInterval(() => {
-  secondsPlayed++;
-  updateLeaderboards();
-}, 1000);
-
-function updateLeaderboards() {
-  const user = getUsername();
-  leaderboard.push({ name: user, points });
-  leaderboard.sort((a, b) => b.points - a.points);
-  timePlayedMap[user] = (timePlayedMap[user] || 0) + 1;
-  luckMap[user] = luck;
-
-  const leaderboardHTML = leaderboard.slice(0, 5).map((u, i) => `<li>#${i + 1}: ${u.name} - ${u.points} pts</li>`).join("");
-  const timeHTML = Object.entries(timePlayedMap).sort((a,b)=>b[1]-a[1]).slice(0,5).map((e,i)=>`<li>#${i+1}: ${e[0]} - ${e[1]}s</li>`).join("");
-  const luckHTML = Object.entries(luckMap).sort((a,b)=>b[1]-a[1]).slice(0,5).map((e,i)=>`<li>#${i+1}: ${e[0]} - ${e[1].toFixed(2)}x</li>`).join("");
-
-  document.getElementById("leaderboardList").innerHTML = `
-    <h3>Most Points</h3>
-    <ul>${leaderboardHTML}</ul>
-    <h3>Most Time Played</h3>
-    <ul>${timeHTML}</ul>
-    <h3>Top Luck</h3>
-    <ul>${luckHTML}</ul>
-  `;
-}
-
-window.onload = () => {
-  getUsername();
-  document.getElementById("rebirthTokens").textContent = `Tokens: ${rebirthTokens}`;
-  updateCarIndex();
-};
-</script>
+  <script>
+    // Fallback for images that fail to load
+    const fallbackImage = "https://via.placeholder.com/300x200?text=No+Image";
+    document.querySelectorAll("img").forEach(img => {
+      img.onerror = () => {
+        img.src = fallbackImage;
+      };
+    });
+  </script>
 </body>
 </html>

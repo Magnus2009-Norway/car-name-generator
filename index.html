@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Car Spin Madness Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
@@ -12,57 +13,66 @@
       overflow-x: hidden;
     }
     header {
+      position: fixed;
+      width: 100%;
+      background: #1f2937;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem;
-      background: #1f2937;
+      z-index: 1000;
     }
     nav button {
-      margin-left: 10px;
-      padding: 8px 16px;
+      background: #ef4444;
       border: none;
-      border-radius: 8px;
-      background-color: #ef4444;
+      padding: 10px;
+      margin-left: 10px;
+      border-radius: 6px;
       color: white;
       font-weight: bold;
       cursor: pointer;
     }
     main {
-      padding: 100px 20px;
+      margin-top: 80px;
+      padding: 1rem;
       text-align: center;
     }
-    #carImage {
-      max-width: 300px;
-      margin: 20px auto;
-      border-radius: 10px;
+    .section {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 12px;
     }
     .btn {
+      background: #ef4444;
       padding: 10px 20px;
       border: none;
-      border-radius: 8px;
-      background: #ef4444;
       color: white;
-      font-weight: bold;
-      cursor: pointer;
+      border-radius: 10px;
       margin: 10px;
+      cursor: pointer;
+      font-weight: bold;
     }
     #notification {
-      margin-top: 20px;
-      font-weight: bold;
+      margin-top: 10px;
+      font-size: 18px;
       color: yellow;
     }
     #chatBox {
       position: fixed;
       bottom: 10px;
       right: 10px;
+      width: 300px;
       background: #1e293b;
       padding: 10px;
-      border-radius: 8px;
-      width: 250px;
+      border-radius: 10px;
     }
     #chatMessages {
-      max-height: 120px;
+      max-height: 100px;
       overflow-y: auto;
       font-size: 14px;
       margin-bottom: 8px;
@@ -73,129 +83,82 @@
       border-radius: 6px;
       border: none;
     }
-    canvas#confettiCanvas {
+    canvas#confetti {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
       pointer-events: none;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Car Spin Madness Pro</h1>
+    <div>Points: <span id="points">0</span> | Luck: <span id="luck">1.0</span>x</div>
     <nav>
-      <button onclick="spinCar()">🎰 Spin</button>
-      <button onclick="upgradeLuck()">⬆️ Upgrade Luck</button>
+      <button onclick="showSection('home')">Home</button>
+      <button onclick="showSection('shop')">Shop</button>
+      <button onclick="showSection('leaderboard')">Leaderboard</button>
+      <button onclick="showSection('index')">Index</button>
     </nav>
   </header>
 
   <main>
-    <div id="carName">Click spin to get a car</div>
-    <img id="carImage" src="" alt="Car Image" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-    <div id="carRarity"></div>
-    <div id="notification"></div>
+    <section id="home" class="section active">
+      <h2 id="carName">Spin to get a car</h2>
+      <p id="carRarity"></p>
+      <img id="carImage" src="" alt="Car" onerror="this.src='https://via.placeholder.com/320x200?text=No+Image'">
+      <div>
+        <button class="btn" onclick="spinCar()">🎰 Spin Car</button>
+        <button class="btn" onclick="upgradeLuck()">⬆️ Upgrade Luck</button>
+      </div>
+      <div id="notification"></div>
+    </section>
+
+    <section id="shop" class="section">
+      <h2>🛍️ Shop</h2>
+      <p>Upgrade your luck or buy bonuses!</p>
+      <p>Each upgrade increases your odds!</p>
+      <!-- Placeholder buttons -->
+      <button class="btn">+0.1x Luck (Cost: 100)</button>
+      <button class="btn">Faster Spin (Cost: 200)</button>
+    </section>
+
+    <section id="leaderboard" class="section">
+      <h2>🏆 Leaderboard</h2>
+      <p>Coming soon!</p>
+    </section>
+
+    <section id="index" class="section">
+      <h2>🚗 Car Index</h2>
+      <p>See which cars you've unlocked</p>
+    </section>
   </main>
 
   <div id="chatBox">
     <div id="chatMessages"></div>
-    <input id="chatInput" type="text" placeholder="Type a message...">
+    <input type="text" id="chatInput" placeholder="Say something..." />
   </div>
-  <canvas id="confettiCanvas"></canvas>
+
+  <canvas id="confetti"></canvas>
+
+  <footer style="text-align:center; padding:1rem;">
+    <p><strong>Support our socials!</strong></p>
+    <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank" style="color:lightblue;">YouTube: TurboTales</a>
+  </footer>
 
   <script>
-    const bannedWords = [/fuck/i, /shit/i, /bitch/i, /asshole/i, /nigg/i];
-    const cars = Array.from({ length: 500 }, (_, i) => {
-      const rarities = [
-        { rarity: "Common", chance: 0.35, points: 1 },
-        { rarity: "Uncommon", chance: 0.25, points: 2 },
-        { rarity: "Epic", chance: 0.15, points: 5 },
-        { rarity: "Legendary", chance: 0.10, points: 10 },
-        { rarity: "Exotic", chance: 0.045, points: 25 },
-        { rarity: "Mythic", chance: 0.0045, points: 50 },
-        { rarity: "???", chance: 0.00028, points: 10000 }
-      ];
-      const rarity = rarities[Math.floor(Math.random() * rarities.length)];
-      return {
-        name: `CarModel ${i + 1}`,
-        rarity: rarity.rarity,
-        chance: rarity.chance,
-        points: rarity.points,
-        image: `https://via.placeholder.com/320x200.png?text=Car+${i + 1}`
-      };
-    });
-
-    let points = parseInt(localStorage.getItem("points") || "0");
-    let luck = parseFloat(localStorage.getItem("luck") || "1.0");
-    let username = localStorage.getItem("username");
-    if (!username || bannedWords.some(w => w.test(username))) {
-      do {
-        username = prompt("Enter a username (no bad words):");
-      } while (!username || bannedWords.some(w => w.test(username)));
-      localStorage.setItem("username", username);
+    // Minimal funksjonalitet – full versjon med 500 biler legges til i neste steg
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
-
-    document.getElementById("chatInput").addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        let msg = this.value;
-        bannedWords.forEach(word => msg = msg.replace(word, "***"));
-        const div = document.createElement("div");
-        div.textContent = `${username}: ${msg}`;
-        document.getElementById("chatMessages").appendChild(div);
-        this.value = "";
-      }
-    });
 
     function spinCar() {
-      const total = cars.reduce((sum, c) => sum + c.chance * luck, 0);
-      const rand = Math.random() * total;
-      let cumulative = 0;
-      for (const car of cars) {
-        cumulative += car.chance * luck;
-        if (rand <= cumulative) {
-          showCar(car);
-          points += car.points;
-          localStorage.setItem("points", points);
-          if (car.rarity === "???" || car.rarity === "Legendary") launchConfetti();
-          break;
-        }
-      }
-    }
-
-    function showCar(car) {
-      document.getElementById("carName").textContent = car.name;
-      document.getElementById("carRarity").textContent = `${car.rarity} (+${car.points}pts)`;
-      document.getElementById("carImage").src = car.image;
-      document.getElementById("notification").textContent = `You got ${car.name}!`;
+      alert('Spinning... (kommer i full versjon)');
     }
 
     function upgradeLuck() {
-      const cost = Math.floor(100 * luck);
-      if (points >= cost) {
-        points -= cost;
-        luck += 0.1;
-        localStorage.setItem("points", points);
-        localStorage.setItem("luck", luck);
-        document.getElementById("notification").textContent = `Luck upgraded to ${luck.toFixed(2)}x!`;
-      } else {
-        document.getElementById("notification").textContent = "Not enough points!";
-      }
-    }
-
-    function launchConfetti() {
-      const canvas = document.getElementById("confettiCanvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      for (let i = 0; i < 300; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
-        ctx.fillRect(x, y, 4, 4);
-      }
-      setTimeout(() => ctx.clearRect(0, 0, canvas.width, canvas.height), 2000);
+      alert('Upgrading luck... (kommer i full versjon)');
     }
   </script>
 </body>

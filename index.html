@@ -247,7 +247,6 @@
   </div>
 
   <script>
-    // --- DATA ---
     const cars = [
       {name: "Tesla Model 3", rarity: "Common", chance: 0.35, points: 1, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Tesla_Model_3_parked%2C_front_driver_side%2C_26_August_2020.jpg/320px-Tesla_Model_3_parked%2C_front_driver_side%2C_26_August_2020.jpg"},
       {name: "BMW M3", rarity: "Uncommon", chance: 0.25, points: 2, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/BMW_M3_E92_Coup%C3%A9.JPG/320px-BMW_M3_E92_Coup%C3%A9.JPG"},
@@ -256,10 +255,9 @@
       {name: "Bugatti Chiron", rarity: "Exotic", chance: 0.045, points: 25, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Bugatti_Chiron_IMG_0463.jpg/320px-Bugatti_Chiron_IMG_0463.jpg"},
       {name: "Ferrari LaFerrari", rarity: "Mythic", chance: 0.0045, points: 50, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Ferrari_LaFerrari_Paris_2013_06.jpg/320px-Ferrari_LaFerrari_Paris_2013_06.jpg"},
       {name: "???", rarity: "???", chance: 0.00028, points: 10000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png"},
-      // ... legg til flere biler her (totalt 500+ i JSON separat)
+      // flere biler kan legges til i en separat JSON for ytelse
     ];
 
-    // --- STATE ---
     let points = 0;
     let luck = 1.0;
     let spinSpeed = 3000;
@@ -268,10 +266,8 @@
     let chatColorUnlocked = false;
     let username = localStorage.getItem("carSpinUsername") || "";
 
-    // Chat banning filter list
     const bannedWords = ["fuck", "shit", "bitch", "asshole", "damn"];
 
-    // --- INITIALIZATION ---
     document.getElementById('chatInput').disabled = true;
 
     window.onload = () => {
@@ -287,8 +283,6 @@
         incrementTimePlayed();
       }, 1000);
     };
-
-    // --- FUNCTIONS ---
 
     function askUsername() {
       let name = prompt("Enter your username:");
@@ -349,41 +343,23 @@
 
     function updateStatus() {
       document.getElementById('pointsStatus').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-      document.getElementById('onlineStatus').textContent = `Online: 1`; // static for now
+      document.getElementById('onlineStatus').textContent = `Online: 1`;
     }
 
+    // Her er endret spinCar, spinner IKKE lenger, viser bil umiddelbart
     function spinCar() {
       if (points < 0) {
         showNotification("You have no points to spin!");
         return;
       }
-
-      const spinDuration = spinSpeed;
-      const carCard = document.getElementById('carCard');
-      carCard.style.transform = "rotate(0deg)";
-      let rotation = 0;
-      const interval = 20;
-      const totalSteps = spinDuration / interval;
-      let step = 0;
-
-      const spinInterval = setInterval(() => {
-        rotation += 360 / totalSteps;
-        carCard.style.transform = `rotate(${rotation}deg)`;
-        step++;
-        if (step >= totalSteps) {
-          clearInterval(spinInterval);
-          revealCar();
-        }
-      }, interval);
+      revealCar();
     }
 
     function revealCar() {
-      let chanceTotal = 0;
       const adjustedCars = cars.map(car => {
         return {...car, adjChance: car.chance * luck};
       });
       const sumChance = adjustedCars.reduce((acc, c) => acc + c.adjChance, 0);
-
       const rand = Math.random() * sumChance;
       let cumChance = 0;
       let selectedCar = adjustedCars[0];
@@ -539,4 +515,3 @@
   </script>
 </body>
 </html>
- 

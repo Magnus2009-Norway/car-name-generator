@@ -7,10 +7,12 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
       background: linear-gradient(to right, #141e30, #243b55);
       color: #fff;
-      padding: 50px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     h1 {
       font-size: 3rem;
@@ -35,8 +37,7 @@
       padding: 20px;
       background-color: rgba(255, 255, 255, 0.1);
       border-radius: 15px;
-      display: inline-block;
-      transition: 0.3s ease-in-out;
+      text-align: center;
     }
     #carName {
       font-size: 2rem;
@@ -52,6 +53,19 @@
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
+    #rarityList {
+      margin-top: 50px;
+      background-color: rgba(0,0,0,0.4);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+    }
+    #rarityList h2 {
+      margin-bottom: 10px;
+    }
+    .rarity-item {
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
@@ -63,6 +77,17 @@
     <div id="carName"></div>
     <div id="rarity"></div>
     <img id="carImage" src="" alt="Car Image">
+  </div>
+
+  <div id="rarityList">
+    <h2>🎯 Rarities & Points</h2>
+    <div class="rarity-item" style="color:#ccc">Common = 1 point</div>
+    <div class="rarity-item" style="color:#76c7c0">Uncommon = 2 points</div>
+    <div class="rarity-item" style="color:#a64ca6">Epic = 5 points</div>
+    <div class="rarity-item" style="color:#eab308">Legendary = 10 points</div>
+    <div class="rarity-item" style="color:#f43f5e">Mythic = 25 points</div>
+    <div class="rarity-item" style="color:#0ea5e9">Exotic = 50 points</div>
+    <div class="rarity-item" style="color:#00ff00">Hacker = 100 points</div>
   </div>
 
   <script>
@@ -77,7 +102,6 @@
       { name: "Koenigsegg Jesko", img: "https://upload.wikimedia.org/wikipedia/commons/c/c2/Koenigsegg_Jesko_IMG_0086.jpg", rarity: "Hacker" },
       { name: "McLaren 720S", img: "https://upload.wikimedia.org/wikipedia/commons/1/1b/McLaren_720S_Genf_2018.jpg", rarity: "Exotic" },
       { name: "Mazda RX-7", img: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mazda_RX-7_Type_RB_Bathurst_R_Mazda_Museum.jpg", rarity: "Legendary" }
-      // Du kan enkelt legge til flere biler her senere!
     ];
 
     const rarityColors = {
@@ -101,7 +125,6 @@
       carImage.src = "";
       rarity.innerText = "";
 
-      let spinCount = 0;
       const spinInterval = setInterval(() => {
         const randomCar = cars[Math.floor(Math.random() * cars.length)];
         carName.innerText = randomCar.name;

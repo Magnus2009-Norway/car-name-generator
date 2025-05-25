@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Car Spin Madness PRO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Spin Madness PRO</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -99,6 +99,17 @@
       border-radius: 6px;
       border: none;
     }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 2rem;
+    }
+    footer img {
+      width: 40px;
+      margin: 10px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
     #pointsTop {
       position: fixed;
       top: 60px;
@@ -110,6 +121,209 @@
       border-radius: 10px;
       z-index: 1000;
       box-shadow: 0 0 6px #000;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Car Spin Madness PRO</h1>
+    <nav>
+      <button onclick="showSection('main')">Home</button>
+      <button onclick="showSection('shop')">Shop</button>
+      <button onclick="showSection('leaderboard')">Leaderboard</button>
+      <button onclick="showSection('index')">Index</button>
+      <button onclick="showSection('settings')">Settings</button>
+    </nav>
+  </header>
+
+  <div id="pointsTop">Points: 0 | Luck: 1.0x</div>
+
+  <main>
+    <section id="main" class="section active">
+      <div id="carCard">
+        <h2 id="carName">?</h2>
+        <p id="carRarity">Rarity: ?</p>
+        <img id="carImage" src="https://via.placeholder.com/300x200?text=Your+Car" />
+        <div>
+          <button class="btn" onclick="spinCar()">🎰 Spin</button>
+        </div>
+        <div id="notification"></div>
+      </div>
+    </section>
+
+    <section id="shop" class="section">
+      <h2>🛍️ Shop</h2>
+      <button class="btn" onclick="upgradeLuck()">Upgrade Luck (Cost: 100)</button>
+      <button class="btn" onclick="buyUpgrade('bonusPoints')">Bonus Points</button>
+      <button class="btn" onclick="buyUpgrade('extraSpin')">Extra Spin Chance</button>
+      <h3>💎 Rebirth Shop</h3>
+      <button class="btn" onclick="tryRebirth()">Rebirth Now</button>
+      <p id="rebirthTokens">Tokens: 0</p>
+    </section>
+
+    <section id="leaderboard" class="section">
+      <h2>🏆 Leaderboard</h2>
+      <p>Coming soon... (Points, Luck, Time Played)</p>
+    </section>
+
+    <section id="index" class="section">
+      <h2>🚗 Car Index</h2>
+      <div id="indexGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 20px;"></div>
+    </section>
+
+    <section id="settings" class="section">
+      <h2>⚙️ Settings</h2>
+      <label>Volume:</label>
+      <input type="range" min="0" max="1" step="0.01" value="0.1" onchange="setVolume(this.value)" />
+      <button class="btn" onclick="toggleChat()">Toggle Chat</button>
+      <button class="btn" onclick="resetProgress()">Reset Progress</button>
+    </section>
+  </main>
+
+  <div id="chatBox">
+    <div id="chatMessages"></div>
+    <input type="text" id="chatInput" placeholder="Type message..." />
+  </div>
+
+  <footer>
+    <p>Support our socials!</p>
+    <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
+    </a>
+    <a href="https://www.tiktok.com/@turbotales02" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" />
+    </a>
+  </footer>
+
+  <!-- SCRIPTS kommer i neste del -->
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Spin Madness PRO</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 1000;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    nav button {
+      margin-left: 10px;
+      padding: 8px 16px;
+      background: #ef4444;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
+    #pointsTop {
+      position: fixed;
+      top: 60px;
+      left: 20px;
+      background: #111827;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 6px #000;
+      z-index: 1000;
+    }
+    main {
+      padding-top: 120px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .section {
+      display: none;
+      padding: 2rem;
+    }
+    .active {
+      display: block;
+    }
+    .btn {
+      background: #ef4444;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 12px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #carCard {
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+    #carCard img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 1rem 0;
+    }
+    #notification {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #facc15;
+      color: black;
+      display: none;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    #chatBox {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 280px;
+      background: #1e293b;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #000;
+    }
+    #chatMessages {
+      max-height: 120px;
+      overflow-y: auto;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    #chatInput {
+      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
+      border: none;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 2rem;
+    }
+    footer img {
+      width: 40px;
+      margin: 10px;
+      vertical-align: middle;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -141,10 +355,10 @@
 
     <section id="shop" class="section">
       <h2>🛍️ Shop</h2>
-      <button class="btn" onclick="upgradeLuck()">Upgrade Luck (100pt)</button>
-      <button class="btn" onclick="buyUpgrade('bonusPoints')">Bonus Points (1 token)</button>
-      <button class="btn" onclick="buyUpgrade('extraSpin')">Extra Spin Chance (1 token)</button>
-      <h3>🔁 Rebirth Shop</h3>
+      <button class="btn" onclick="upgradeLuck()">Upgrade Luck (Cost: 100)</button>
+      <button class="btn" onclick="buyUpgrade('bonusPoints')">Bonus Points (1 Token)</button>
+      <button class="btn" onclick="buyUpgrade('extraSpin')">Extra Spin Chance (1 Token)</button>
+      <h3>💎 Rebirth Shop</h3>
       <button class="btn" onclick="tryRebirth()">Rebirth Now</button>
       <p id="rebirthTokens">Tokens: 0</p>
     </section>
@@ -175,24 +389,455 @@
   </div>
 
   <footer>
-    <p style="text-align: center; font-size: 16px;">Support our socials!</p>
-    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
-      <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" style="width: 40px; height: 40px;" />
-      </a>
-      <a href="https://www.tiktok.com/@turbotales02" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" style="width: 40px; height: 40px;" />
-      </a>
-    </div>
+    <p>Support our socials!</p>
+    <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
+    </a>
+    <a href="https://www.tiktok.com/@turbotales02" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" />
+    </a>
   </footer>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Spin Madness PRO</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      overflow-x: hidden;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 999;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    nav button {
+      margin-left: 10px;
+      padding: 8px 16px;
+      background: #ef4444;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
+    .section {
+      display: none;
+      padding: 120px 20px 40px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .active {
+      display: block;
+    }
+    #pointsTop {
+      position: fixed;
+      top: 60px;
+      left: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #1e293b;
+      padding: 8px 16px;
+      border-radius: 10px;
+      z-index: 1000;
+      box-shadow: 0 0 6px #000;
+    }
+    #carCard {
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+    #carCard img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 1rem 0;
+    }
+    .btn {
+      background: #ef4444;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 12px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #notification {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #facc15;
+      color: black;
+      display: none;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    #chatBox {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 280px;
+      background: #1e293b;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #000;
+    }
+    #chatMessages {
+      max-height: 120px;
+      overflow-y: auto;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    #chatInput {
+      width: 100%;
+      padding: 6px;
+      border-radius: 6px;
+      border: none;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 2rem;
+    }
+    footer img {
+      width: 40px;
+      margin: 10px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Car Spin Madness PRO</h1>
+    <nav>
+      <button onclick="showSection('main')">Home</button>
+      <button onclick="showSection('shop')">Shop</button>
+      <button onclick="showSection('leaderboard')">Leaderboard</button>
+      <button onclick="showSection('index')">Index</button>
+      <button onclick="showSection('settings')">Settings</button>
+    </nav>
+  </header>
+  <div id="pointsTop">Points: 0 | Luck: 1.00x</div>
+<script>
+// Rebirth system logic
+function tryRebirth() {
+  if (points >= 100000 && luck >= 5.0) {
+    rebirthTokens += 5;
+    points = 0;
+    luck = 1.0;
+    unlockedCars = [];
+    document.getElementById("rebirthTokens").textContent = `Tokens: ${rebirthTokens}`;
+    document.getElementById("pointsTop").textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
+    showNotification("Rebirth complete! +5 Tokens");
+    updateCarIndex();
+  } else {
+    showNotification("You need 100,000 points and 5.0x luck to rebirth.");
+  }
+}
+
+// Upgrade logic using rebirth tokens
+function buyUpgrade(type) {
+  if (rebirthTokens < 1) {
+    return showNotification("Not enough tokens!");
+  }
+  rebirthTokens--;
+  document.getElementById("rebirthTokens").textContent = `Tokens: ${rebirthTokens}`;
+
+  switch(type) {
+    case 'bonusPoints':
+      bonusPointsEnabled = true;
+      showNotification("Bonus Points activated!");
+      break;
+    case 'extraSpin':
+      extraSpinEnabled = true;
+      showNotification("Extra Spin Chance enabled!");
+      break;
+  }
+}
+
+let bonusPointsEnabled = false;
+let extraSpinEnabled = false;
+
+// Modified spinCar function to include bonus and extra spin logic
+function spinCar() {
+  const spinBtn = document.querySelector('.btn');
+  spinBtn.disabled = true;
+
+  let interval = setInterval(() => {
+    const temp = cars[Math.floor(Math.random() * cars.length)];
+    document.getElementById('carName').textContent = temp.name;
+    document.getElementById('carRarity').textContent = `Rarity: ${temp.rarity}`;
+    document.getElementById('carImage').src = temp.image;
+  }, 100);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    let rand = Math.random() * cars.reduce((acc, c) => acc + c.chance * luck, 0);
+    let acc = 0;
+    let chosen = cars[0];
+
+    for (const car of cars) {
+      acc += car.chance * luck;
+      if (rand < acc) {
+        chosen = car;
+        break;
+      }
+    }
+
+    let reward = chosen.points;
+    if (bonusPointsEnabled) reward = Math.floor(reward * 1.2);
+
+    document.getElementById('carName').textContent = chosen.name;
+    document.getElementById('carRarity').textContent = `Rarity: ${chosen.rarity}`;
+    document.getElementById('carImage').src = chosen.image;
+
+    points += reward;
+    document.getElementById("pointsTop").textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
+    showNotification(`You got ${chosen.name}! +${reward} points`);
+
+    if (!unlockedCars.includes(chosen.name)) {
+      unlockedCars.push(chosen.name);
+      updateCarIndex();
+    }
+
+    if (chosen.rarity === "???") throwConfetti();
+
+    if (extraSpinEnabled && Math.random() < 0.15) {
+      showNotification("Extra spin triggered!");
+      setTimeout(() => spinCar(), 1500);
+    } else {
+      spinBtn.disabled = false;
+    }
+  }, 2000);
+}
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Car Spin Madness PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      overflow-x: hidden;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 999;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    nav button {
+      margin-left: 10px;
+      padding: 8px 16px;
+      background: #ef4444;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
+    .section {
+      display: none;
+      padding: 120px 20px 40px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .active {
+      display: block;
+    }
+    #carCard {
+      background: #1e293b;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+    #carCard img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 1rem 0;
+    }
+    .btn {
+      background: #ef4444;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 12px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #notification {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #facc15;
+      color: black;
+      display: none;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    #pointsTop {
+      position: fixed;
+      top: 60px;
+      left: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #1e293b;
+      padding: 8px 16px;
+      border-radius: 10px;
+      z-index: 1000;
+      box-shadow: 0 0 6px #000;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Car Spin Madness PRO</h1>
+    <nav>
+      <button onclick="showSection('main')">Home</button>
+      <button onclick="showSection('shop')">Shop</button>
+      <button onclick="showSection('leaderboard')">Leaderboard</button>
+      <button onclick="showSection('index')">Index</button>
+      <button onclick="showSection('settings')">Settings</button>
+    </nav>
+  </header>
+  <div id="pointsTop">Points: 0 | Luck: 1.0x | Tokens: 0</div>
+
+  <main>
+    <section id="main" class="section active">
+      <div id="carCard">
+        <h2 id="carName">?</h2>
+        <p id="carRarity">Rarity: ?</p>
+        <img id="carImage" src="https://via.placeholder.com/300x200?text=Your+Car" />
+        <div>
+          <button class="btn" onclick="spinCar()">🎰 Spin</button>
+        </div>
+        <div id="notification"></div>
+      </div>
+    </section>
+
+    <section id="shop" class="section">
+      <h2>🛍️ Shop</h2>
+      <p><button class="btn" onclick="upgradeLuck()">Upgrade Luck (100 pts)</button></p>
+      <p><button class="btn" onclick="buyUpgrade('bonusPoints')">Bonus Points (1 token)</button></p>
+      <p><button class="btn" onclick="buyUpgrade('extraSpin')">Extra Spin Chance (1 token)</button></p>
+      <h3>💎 Rebirth Shop</h3>
+      <p><button class="btn" onclick="tryRebirth()">Rebirth (Requires 100000 pts & 5.0x Luck)</button></p>
+    </section>
+  </main>
+
   <script>
-    // Fallback for images that fail to load
-    const fallbackImage = "https://via.placeholder.com/300x200?text=No+Image";
-    document.querySelectorAll("img").forEach(img => {
-      img.onerror = () => {
-        img.src = fallbackImage;
-      };
-    });
+    const cars = [
+      { name: "Toyota Supra", rarity: "Common", chance: 0.4, points: 1, image: "https://cdn.pixabay.com/photo/2021/09/06/14/43/toyota-supra-6601290_1280.jpg" },
+      { name: "BMW M5", rarity: "Uncommon", chance: 0.25, points: 2, image: "https://cdn.pixabay.com/photo/2020/04/22/08/04/bmw-5073132_1280.jpg" },
+      { name: "Audi R8", rarity: "Epic", chance: 0.15, points: 5, image: "https://cdn.pixabay.com/photo/2020/07/30/13/57/audi-5451212_1280.jpg" },
+      { name: "Lamborghini Huracan", rarity: "Legendary", chance: 0.1, points: 10, image: "https://cdn.pixabay.com/photo/2020/10/15/12/14/car-5655729_1280.jpg" },
+      { name: "Bugatti Veyron", rarity: "Exotic", chance: 0.05, points: 25, image: "https://cdn.pixabay.com/photo/2018/01/03/11/09/bugatti-3053271_1280.jpg" },
+      { name: "???", rarity: "???", chance: 0.005, points: 999, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png" }
+    ];
+
+    let points = 0;
+    let luck = 1.0;
+    let rebirthTokens = 0;
+
+    function showNotification(text) {
+      const note = document.getElementById('notification');
+      note.textContent = text;
+      note.style.display = 'block';
+      setTimeout(() => note.style.display = 'none', 3000);
+    }
+
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function spinCar() {
+      const totalChance = cars.reduce((sum, c) => sum + c.chance * luck, 0);
+      const rand = Math.random() * totalChance;
+      let acc = 0;
+      let selected = cars[0];
+
+      for (let car of cars) {
+        acc += car.chance * luck;
+        if (rand < acc) {
+          selected = car;
+          break;
+        }
+      }
+
+      document.getElementById('carName').textContent = selected.name;
+      document.getElementById('carRarity').textContent = `Rarity: ${selected.rarity}`;
+      document.getElementById('carImage').src = selected.image;
+
+      points += selected.points;
+      document.getElementById('pointsTop').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x | Tokens: ${rebirthTokens}`;
+      showNotification(`You got ${selected.name}! +${selected.points} pts`);
+    }
+
+    function upgradeLuck() {
+      const cost = 100;
+      if (points >= cost) {
+        points -= cost;
+        luck += 0.1;
+        document.getElementById('pointsTop').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x | Tokens: ${rebirthTokens}`;
+        showNotification(`Luck upgraded to ${luck.toFixed(2)}x`);
+      } else {
+        showNotification("Not enough points!");
+      }
+    }
+
+    function buyUpgrade(type) {
+      if (rebirthTokens < 1) return showNotification("Not enough Tokens!");
+      rebirthTokens--;
+      document.getElementById('pointsTop').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x | Tokens: ${rebirthTokens}`;
+      showNotification(`${type.replace(/([A-Z])/g, ' $1')} bought!`);
+    }
+
+    function tryRebirth() {
+      if (points >= 100000 && luck >= 5.0) {
+        rebirthTokens += 5;
+        points = 0;
+        luck = 1.0;
+        document.getElementById('pointsTop').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x | Tokens: ${rebirthTokens}`;
+        showNotification("Rebirth successful! +5 Tokens");
+      } else {
+        showNotification("Need 100,000 points & 5.0x luck to rebirth");
+      }
+    }
   </script>
 </body>
 </html>

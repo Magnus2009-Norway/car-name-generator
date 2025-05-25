@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Car Name Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      background: #111;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #00bfff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      margin-top: 20px;
+    }
+    #carName {
+      font-size: 24px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚘 Real Car Name Generator</h1>
+  <p>Click the button to generate a real car model name</p>
+  <button onclick="generateCarName()">Generate Car</button>
+  <div id="carName"></div>
 
+  <script>
+    const carModels = [
+      "Toyota Supra", "Toyota Corolla", "Toyota Camry", "Honda Civic", "Honda Accord", "Honda NSX",
+      "Nissan GT-R", "Nissan 370Z", "Mazda RX-7", "Mazda MX-5", "Mitsubishi Lancer Evo",
+      "Subaru WRX STI", "BMW M3", "BMW M4", "BMW i8", "Audi RS6", "Audi R8",
+      "Mercedes-AMG GT", "Mercedes C63", "Volkswagen Golf GTI", "Porsche 911", "Porsche Cayman",
+      "Lamborghini Huracán", "Lamborghini Aventador", "Ferrari 488", "Ferrari F8 Tributo",
+      "McLaren 720S", "McLaren P1", "Bugatti Chiron", "Bugatti Veyron", "Koenigsegg Jesko",
+      "Pagani Huayra", "Ford Mustang", "Ford GT", "Chevrolet Camaro", "Chevrolet Corvette",
+      "Dodge Charger", "Dodge Challenger", "Jeep Wrangler", "Tesla Model S", "Tesla Roadster",
+      "Lucid Air", "Rimac Nevera", "Alfa Romeo Giulia", "Aston Martin DB11", "Bentley Continental GT",
+      "Rolls-Royce Phantom", "Citroën DS", "Peugeot 208", "Renault Clio", "Volvo XC90",
+      "Saab 9-5", "Lexus LFA", "Infiniti Q60", "Hyundai i30 N", "Kia Stinger GT"
+      // Listen kan utvides med tusenvis til senere
+    ];
+
+    function generateCarName() {
+      const randomIndex = Math.floor(Math.random() * carModels.length);
+      const name = carModels[randomIndex];
+      document.getElementById("carName").innerText = name;
+    }
+  </script>
+</body>
+</html>

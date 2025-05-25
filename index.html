@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,184 +6,99 @@
   <title>Car Spin Madness PRO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: linear-gradient(135deg, #141e30, #243b55);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
       color: white;
-      overflow-x: hidden;
+      text-align: center;
     }
     header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: #1f2937;
+      background: #111827;
+      padding: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 2rem;
-      z-index: 999;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     nav button {
-      margin-left: 10px;
-      padding: 8px 16px;
       background: #ef4444;
       border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
       color: white;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    .section {
-      display: none;
-      padding: 120px 20px 40px;
-      max-width: 1000px;
-      margin: auto;
+    main {
+      padding: 2rem;
     }
-    .active {
-      display: block;
-    }
-    #carCard {
-      background: #1e293b;
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-    }
-    #carCard img {
-      max-width: 100%;
-      border-radius: 12px;
+    #carImage {
+      width: 300px;
+      height: 200px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #333;
       margin: 1rem 0;
     }
     .btn {
+      padding: 0.75rem 1.5rem;
       background: #ef4444;
-      padding: 12px 24px;
-      margin: 10px;
-      border-radius: 12px;
-      border: none;
       color: white;
-      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      margin: 0.5rem;
+      font-size: 1rem;
       cursor: pointer;
     }
     #notification {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background: #facc15;
-      color: black;
-      display: none;
-      border-radius: 10px;
+      margin-top: 1rem;
+      color: yellow;
       font-weight: bold;
     }
-    #chatBox {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      width: 280px;
-      background: #1e293b;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 8px #000;
-    }
-    #chatMessages {
-      max-height: 120px;
-      overflow-y: auto;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-    #chatInput {
-      width: 100%;
-      padding: 6px;
-      border-radius: 6px;
-      border: none;
-    }
     footer {
-      text-align: center;
-      margin-top: 40px;
+      margin-top: 4rem;
       padding: 2rem;
     }
     footer img {
       width: 40px;
-      margin: 10px;
+      margin: 0 10px;
       vertical-align: middle;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Car Spin Madness PRO</h1>
-    <div>
-      <button onclick="showSection('main')">Home</button>
-      <button onclick="showSection('shop')">Shop</button>
-      <button onclick="showSection('leaderboard')">Leaderboard</button>
-      <button onclick="showSection('index')">Index</button>
-      <button onclick="showSection('settings')">Settings</button>
-    </div>
+    <nav>
+      <button onclick="switchTab('home')">Home</button>
+      <button onclick="switchTab('shop')">Shop</button>
+      <button onclick="switchTab('index')">Index</button>
+    </nav>
   </header>
-  <main>
-    <!-- MAIN SECTION -->
-    <section id="main" class="section active">
-      <div id="carCard">
-        <h2 id="carName">?</h2>
-        <p id="carRarity">Rarity: ?</p>
-        <img id="carImage" src="https://via.placeholder.com/300x200?text=Your+Car" />
-        <div>
-          <button class="btn" onclick="spinCar()">🎰 Spin</button>
-          <button class="btn" onclick="upgradeLuck()">🔼 Upgrade Luck</button>
-        </div>
-        <p id="pointsStatus">Points: 0 | Luck: 1.0x</p>
-        <div id="notification"></div>
-      </div>
-    </section>
-
-    <!-- SHOP SECTION -->
-    <section id="shop" class="section">
-      <h2>🛍️ Shop</h2>
-      <button class="btn" onclick="upgradeLuck()">Upgrade Luck (Cost: 100)</button>
-      <button class="btn" onclick="buyUpgrade('spinSpeed')">Spin Speed +</button>
-      <button class="btn" onclick="buyUpgrade('bonusPoints')">Bonus Points +</button>
-      <button class="btn" onclick="buyUpgrade('extraSpin')">Extra Spin Chance</button>
-      <h3>🔁 Rebirth Shop</h3>
-      <button class="btn" onclick="tryRebirth()">Rebirth Now</button>
-      <p id="rebirthTokens">Tokens: 0</p>
-    </section>
-
-    <!-- LEADERBOARD SECTION -->
-    <section id="leaderboard" class="section">
-      <h2>🏆 Leaderboard</h2>
-      <p>Coming soon… (Points, Time Played, Luck)</p>
-    </section>
-
-    <!-- INDEX SECTION -->
-    <section id="index" class="section">
-      <h2>🚗 Car Index</h2>
-      <p>Coming soon…</p>
-    </section>
-
-    <!-- SETTINGS SECTION -->
-    <section id="settings" class="section">
-      <h2>⚙️ Settings</h2>
-      <button class="btn" onclick="toggleMusic()">🎵 Toggle Music</button>
-      <button class="btn" onclick="toggleChat()">💬 Toggle Chat</button>
-      <button class="btn" onclick="resetProgress()">🗑️ Reset Progress</button>
-    </section>
+  <main id="home">
+    <h2 id="carName">Spin for a Car</h2>
+    <p id="carRarity">Rarity: ???</p>
+    <img id="carImage" src="https://via.placeholder.com/300x200?text=Your+Car" />
+    <div>
+      <button class="btn" onclick="spinCar()">🎰 Spin Car</button>
+      <button class="btn" onclick="upgradeLuck()">🔼 Upgrade Luck</button>
+    </div>
+    <p id="pointsStatus">Points: 0 | Luck: 1.0x</p>
+    <div id="notification"></div>
   </main>
-
-  <!-- CHAT BOX -->
-  <div id="chatBox">
-    <div id="chatMessages"></div>
-    <input type="text" id="chatInput" placeholder="Type message..." />
-  </div>
-
-  <!-- FOOTER SOCIALS -->
+  <main id="shop" style="display:none;">
+    <h2>Shop</h2>
+    <p>Coming soon...</p>
+  </main>
+  <main id="index" style="display:none;">
+    <h2>Car Index</h2>
+    <p>Coming soon...</p>
+  </main>
   <footer>
-    <p>Support our socials!</p>
+    <p>Support our socials:</p>
     <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank">
       <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" />
     </a>
@@ -190,215 +106,43 @@
       <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" />
     </a>
   </footer>
-<script>
-  const cars = [
-    { name: "Toyota Corolla", rarity: "Common", chance: 0.4, points: 1, image: "https://cdn.pixabay.com/photo/2017/03/27/14/56/toyota-2178592_1280.jpg" },
-    { name: "BMW M3", rarity: "Uncommon", chance: 0.25, points: 2, image: "https://cdn.pixabay.com/photo/2020/04/22/08/04/bmw-5073132_1280.jpg" },
-    { name: "Audi R8", rarity: "Epic", chance: 0.15, points: 5, image: "https://cdn.pixabay.com/photo/2020/07/30/13/57/audi-5451212_1280.jpg" },
-    { name: "Lamborghini Aventador", rarity: "Legendary", chance: 0.08, points: 10, image: "https://cdn.pixabay.com/photo/2020/10/15/12/14/car-5655729_1280.jpg" },
-    { name: "Bugatti Chiron", rarity: "Exotic", chance: 0.03, points: 25, image: "https://cdn.pixabay.com/photo/2020/05/21/20/24/bugatti-5203705_1280.jpg" },
-    { name: "Ferrari LaFerrari", rarity: "Mythic", chance: 0.01, points: 50, image: "https://cdn.pixabay.com/photo/2021/06/28/21/42/ferrari-6370609_1280.jpg" },
-    { name: "???", rarity: "???", chance: 0.00028, points: 10000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png" }
-  ];
+  <script>
+    const cars = [
+      {name: "Toyota Supra", rarity: "Common", points: 1, image: "https://cdn.pixabay.com/photo/2017/03/27/14/56/toyota-2178592_1280.jpg"},
+      {name: "Bugatti Chiron", rarity: "Exotic", points: 25, image: "https://cdn.pixabay.com/photo/2020/05/21/20/24/bugatti-5203705_1280.jpg"},
+      {name: "Ferrari LaFerrari", rarity: "Mythic", points: 50, image: "https://cdn.pixabay.com/photo/2021/06/28/21/42/ferrari-6370609_1280.jpg"},
+      {name: "???", rarity: "???", points: 10000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png"}
+    ];
+    let points = 0;
+    let luck = 1.0;
 
-  let points = 0;
-  let luck = 1.0;
-  let rebirthTokens = 0;
-  let chatEnabled = true;
-  let unlockedCars = [];
+    function spinCar() {
+      const random = Math.random();
+      let selected = cars[Math.floor(Math.random() * cars.length)];
+      document.getElementById("carName").textContent = selected.name;
+      document.getElementById("carRarity").textContent = "Rarity: " + selected.rarity;
+      document.getElementById("carImage").src = selected.image;
+      points += selected.points;
+      document.getElementById("pointsStatus").textContent = "Points: " + points + " | Luck: " + luck.toFixed(2) + "x";
+      document.getElementById("notification").textContent = "You got " + selected.name + "! +" + selected.points + " points!";
+    }
 
-  function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
-
-  function spinCar() {
-    const spinBtn = document.querySelector('.btn');
-    spinBtn.disabled = true;
-    setTimeout(() => spinBtn.disabled = false, 2000);
-
-    const totalChance = cars.reduce((sum, c) => sum + c.chance * luck, 0);
-    const rand = Math.random() * totalChance;
-    let acc = 0;
-    let selected = cars[0];
-
-    for (let car of cars) {
-      acc += car.chance * luck;
-      if (rand < acc) {
-        selected = car;
-        break;
+    function upgradeLuck() {
+      const cost = Math.floor(100 * luck);
+      if (points >= cost) {
+        points -= cost;
+        luck += 0.1;
+        document.getElementById("notification").textContent = "Luck upgraded!";
+        document.getElementById("pointsStatus").textContent = "Points: " + points + " | Luck: " + luck.toFixed(2) + "x";
+      } else {
+        document.getElementById("notification").textContent = "Not enough points!";
       }
     }
 
-    document.getElementById('carName').textContent = selected.name;
-    document.getElementById('carRarity').textContent = `Rarity: ${selected.rarity}`;
-    document.getElementById('carImage').src = selected.image;
-
-    points += selected.points;
-    document.getElementById('pointsStatus').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-    showNotification(`You got ${selected.name}! +${selected.points} points`);
-
-    if (!unlockedCars.includes(selected.name)) {
-      unlockedCars.push(selected.name);
+    function switchTab(tab) {
+      document.querySelectorAll("main").forEach(el => el.style.display = "none");
+      document.getElementById(tab).style.display = "block";
     }
-
-    if (selected.rarity === "???") {
-      addChatMessage("GLOBAL", `🎉 ${getUsername()} pulled the rare ??? car! 🎉`);
-      throwConfetti();
-    }
-  }
-
-  function upgradeLuck() {
-    const cost = Math.floor(100 * luck);
-    if (points >= cost) {
-      points -= cost;
-      luck += 0.1;
-      showNotification(`Luck upgraded to ${luck.toFixed(2)}x!`);
-      document.getElementById('pointsStatus').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-    } else {
-      showNotification("Not enough points!");
-    }
-  }
-
-  function showNotification(msg) {
-    const note = document.getElementById('notification');
-    note.textContent = msg;
-    note.style.display = 'block';
-    setTimeout(() => note.style.display = 'none', 3000);
-  }
-
-  function addChatMessage(user, msg) {
-    const chat = document.getElementById('chatMessages');
-    const p = document.createElement('p');
-    p.textContent = `${user}: ${msg}`;
-    chat.appendChild(p);
-    chat.scrollTop = chat.scrollHeight;
-  }
-
-  function toggleChat() {
-    chatEnabled = !chatEnabled;
-    document.getElementById('chatBox').style.display = chatEnabled ? 'block' : 'none';
-  }
-
-  function toggleMusic() {
-    bgm.paused ? bgm.play() : bgm.pause();
-  }
-
-  function resetProgress() {
-    if (confirm("Are you sure you want to reset all progress?")) {
-      points = 0;
-      luck = 1.0;
-      unlockedCars = [];
-      rebirthTokens = 0;
-      showNotification("Progress reset!");
-      document.getElementById('pointsStatus').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-    }
-  }
-
-  function getUsername() {
-    let name = localStorage.getItem("username");
-    if (!name) {
-      name = prompt("Enter your username:");
-      name = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 12);
-      localStorage.setItem("username", name);
-    }
-    return name;
-  }
-
-  const bgm = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_f61df72d96.mp3?filename=slow-relaxing-background-110109.mp3");
-  bgm.volume = 0.1;
-  bgm.loop = true;
-  bgm.play();
-</script>
-<script>
-  function tryRebirth() {
-    if (points >= 100000 && luck >= 5.0) {
-      rebirthTokens += 5;
-      points = 0;
-      luck = 1.0;
-      unlockedCars = [];
-      showNotification("Rebirth successful! +5 Tokens");
-      document.getElementById('rebirthTokens').textContent = `Tokens: ${rebirthTokens}`;
-      document.getElementById('pointsStatus').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-    } else {
-      showNotification("You need 100,000 points and 5.0x luck to rebirth.");
-    }
-  }
-
-  function buyUpgrade(type) {
-    let cost = 100;
-    if (rebirthTokens < 1) return showNotification("Not enough Rebirth Tokens!");
-    switch (type) {
-      case 'spinSpeed':
-        showNotification("Spin speed upgraded!");
-        break;
-      case 'bonusPoints':
-        showNotification("Bonus points active!");
-        break;
-      case 'extraSpin':
-        showNotification("Extra spin chance boosted!");
-        break;
-    }
-    rebirthTokens--;
-    document.getElementById('rebirthTokens').textContent = `Tokens: ${rebirthTokens}`;
-  }
-
-  // Chat input handler
-  document.getElementById("chatInput").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      const txt = this.value.trim();
-      if (txt.length > 0) {
-        const filtered = filterBadWords(txt);
-        addChatMessage(getUsername(), filtered);
-        this.value = "";
-      }
-    }
-  });
-
-  // Spacebar support
-  document.body.addEventListener("keydown", function (e) {
-    if (e.code === "Space") {
-      e.preventDefault();
-      spinCar();
-    }
-  });
-
-  // Sensur
-  const badWords = ["fuck", "shit", "nigger", "bitch", "asshole"];
-  function filterBadWords(msg) {
-    let clean = msg;
-    badWords.forEach(word => {
-      const reg = new RegExp(word, 'gi');
-      clean = clean.replace(reg, "*".repeat(word.length));
-    });
-    return clean;
-  }
-
-  // Konfetti (enkelt)
-  function throwConfetti() {
-    for (let i = 0; i < 30; i++) {
-      const div = document.createElement("div");
-      div.style.position = "fixed";
-      div.style.left = Math.random() * window.innerWidth + "px";
-      div.style.top = "-20px";
-      div.style.width = "10px";
-      div.style.height = "10px";
-      div.style.background = ["#ff0", "#f0f", "#0ff", "#fff"][Math.floor(Math.random() * 4)];
-      div.style.zIndex = 9999;
-      div.style.borderRadius = "50%";
-      div.style.opacity = "0.9";
-      div.style.transition = "top 2s linear";
-      document.body.appendChild(div);
-      setTimeout(() => div.style.top = window.innerHeight + "px", 100);
-      setTimeout(() => div.remove(), 2100);
-    }
-  }
-
-  // Start
-  window.onload = () => {
-    getUsername();
-    document.getElementById('rebirthTokens').textContent = `Tokens: ${rebirthTokens}`;
-  };
-</script>
+  </script>
 </body>
 </html>

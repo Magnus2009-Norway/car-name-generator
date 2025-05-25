@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Car Spin Madness Pro</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #141e30, #243b55);
       color: white;
       overflow-x: hidden;
@@ -14,312 +14,189 @@
     header {
       display: flex;
       justify-content: space-between;
-      padding: 15px 30px;
-      background-color: #1f2937;
       align-items: center;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 100;
+      padding: 1rem;
+      background: #1f2937;
     }
-    header h1 { margin: 0; font-size: 22px; }
     nav button {
-      background: #ef4444;
-      border: none;
-      padding: 8px 14px;
       margin-left: 10px;
+      padding: 8px 16px;
+      border: none;
       border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
+      background-color: #ef4444;
       color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
-    nav button:hover { background-color: #dc2626; }
     main {
-      padding-top: 80px;
-      max-width: 900px;
-      margin: auto;
+      padding: 100px 20px;
       text-align: center;
-    }
-    #carDisplay {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 20px;
-      margin: 20px auto;
-      max-width: 500px;
-    }
-    #carName { font-size: 24px; font-weight: bold; }
-    #carRarity {
-      font-size: 16px;
-      margin: 10px 0;
-      padding: 5px;
-      border-radius: 6px;
-      background: #333;
     }
     #carImage {
       max-width: 300px;
-      margin-top: 15px;
+      margin: 20px auto;
       border-radius: 10px;
     }
     .btn {
-      background: #ef4444;
-      border: none;
-      color: white;
       padding: 10px 20px;
-      margin: 10px 5px;
+      border: none;
       border-radius: 8px;
-      cursor: pointer;
+      background: #ef4444;
+      color: white;
       font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
     }
     #notification {
-      margin-top: 10px;
+      margin-top: 20px;
       font-weight: bold;
       color: yellow;
     }
-    #indexSection, #shopSection, #leaderboardSection {
-      display: none;
-      padding: 20px;
-    }
-    .car-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 12px;
-      margin-top: 20px;
-    }
-    .car-tile {
-      background: #000;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-    }
-    .car-tile img {
-      width: 100px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-    .car-tile.locked img { filter: brightness(0); }
-    footer {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #94a3b8;
-    }
     #chatBox {
       position: fixed;
-      right: 10px;
       bottom: 10px;
-      width: 250px;
+      right: 10px;
       background: #1e293b;
       padding: 10px;
-      border-radius: 10px;
-      display: block;
+      border-radius: 8px;
+      width: 250px;
     }
     #chatMessages {
-      height: 100px;
+      max-height: 120px;
       overflow-y: auto;
-      font-size: 12px;
+      font-size: 14px;
       margin-bottom: 8px;
     }
     #chatInput {
       width: 100%;
       padding: 6px;
-      border: none;
       border-radius: 6px;
-    }
-    #toggleChat {
-      position: fixed;
-      right: 10px;
-      bottom: 170px;
-      background: #3b82f6;
       border: none;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
+    }
+    canvas#confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
   <header>
-    <div id="onlineStatus">Online: 1</div>
     <h1>Car Spin Madness Pro</h1>
-    <div>
-      <nav>
-        <button onclick="showSection('home')">Home</button>
-        <button onclick="showSection('shopSection')">Shop</button>
-        <button onclick="showSection('leaderboardSection')">Leaderboard</button>
-        <button onclick="showSection('indexSection')">Index</button>
-      </nav>
-    </div>
+    <nav>
+      <button onclick="spinCar()">🎰 Spin</button>
+      <button onclick="upgradeLuck()">⬆️ Upgrade Luck</button>
+    </nav>
   </header>
 
   <main>
-    <section id="home">
-      <div id="carDisplay">
-        <div id="carName">?</div>
-        <div id="carRarity">Spin to get a car!</div>
-        <img id="carImage" src="" alt="Car Image" />
-      </div>
-      <button class="btn" onclick="spinCar()">🎰 Spin Car</button>
-      <button class="btn" onclick="upgradeLuck()">⬆️ Upgrade Luck</button>
-      <div id="notification"></div>
-    </section>
-
-    <section id="shopSection">
-      <h2>🛒 Shop</h2>
-      <p id="currentLuck">Current Luck: 1.0x</p>
-      <button class="btn" onclick="upgradeLuck()">Upgrade Luck</button>
-    </section>
-
-    <section id="leaderboardSection">
-      <h2>🏆 Leaderboard</h2>
-      <div id="leaderboard">Loading...</div>
-    </section>
-
-    <section id="indexSection">
-      <h2>📄 Car Index</h2>
-      <div class="car-grid" id="carGrid"></div>
-    </section>
-
-    <footer>
-      <p>🔗 <a href="https://www.youtube.com/@TurboTalesnrwy" target="_blank">TurboTales YouTube</a></p>
-    </footer>
+    <div id="carName">Click spin to get a car</div>
+    <img id="carImage" src="" alt="Car Image" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+    <div id="carRarity"></div>
+    <div id="notification"></div>
   </main>
 
-  <button id="toggleChat" onclick="toggleChatBox()">Toggle Chat</button>
   <div id="chatBox">
     <div id="chatMessages"></div>
-    <input type="text" id="chatInput" placeholder="Type a message..." />
+    <input id="chatInput" type="text" placeholder="Type a message...">
   </div>
+  <canvas id="confettiCanvas"></canvas>
 
   <script>
-    // === Full JavaScript med logikk og 200+ biler ===
+    const bannedWords = [/fuck/i, /shit/i, /bitch/i, /asshole/i, /nigg/i];
+    const cars = Array.from({ length: 500 }, (_, i) => {
+      const rarities = [
+        { rarity: "Common", chance: 0.35, points: 1 },
+        { rarity: "Uncommon", chance: 0.25, points: 2 },
+        { rarity: "Epic", chance: 0.15, points: 5 },
+        { rarity: "Legendary", chance: 0.10, points: 10 },
+        { rarity: "Exotic", chance: 0.045, points: 25 },
+        { rarity: "Mythic", chance: 0.0045, points: 50 },
+        { rarity: "???", chance: 0.00028, points: 10000 }
+      ];
+      const rarity = rarities[Math.floor(Math.random() * rarities.length)];
+      return {
+        name: `CarModel ${i + 1}`,
+        rarity: rarity.rarity,
+        chance: rarity.chance,
+        points: rarity.points,
+        image: `https://via.placeholder.com/320x200.png?text=Car+${i + 1}`
+      };
+    });
 
-let username = localStorage.getItem("username");
-if (!username) {
-  while (!username || username.length < 3 || username.length > 12 || /fuck|shit|bitch/i.test(username)) {
-    username = prompt("Choose a username (1-12 chars, no bad words):");
-  }
-  localStorage.setItem("username", username);
-}
-
-let points = parseInt(localStorage.getItem("points") || "0");
-let luck = parseFloat(localStorage.getItem("luck") || "1.0");
-let unlocked = JSON.parse(localStorage.getItem("unlocked") || "[]");
-
-const cars = Array.from({ length: 200 }, (_, i) => {
-  const rarities = [
-    { rarity: "Common", chance: 0.35, points: 1 },
-    { rarity: "Uncommon", chance: 0.25, points: 2 },
-    { rarity: "Epic", chance: 0.15, points: 5 },
-    { rarity: "Legendary", chance: 0.10, points: 10 },
-    { rarity: "Exotic", chance: 0.045, points: 25 },
-    { rarity: "Mythic", chance: 0.0045, points: 50 },
-    { rarity: "???", chance: 0.00028, points: 10000 }
-  ];
-  const baseName = `Car ${i + 1}`;
-  const rarityObj = rarities[Math.floor(Math.random() * rarities.length)];
-  return {
-    name: baseName,
-    rarity: rarityObj.rarity,
-    chance: rarityObj.chance,
-    points: rarityObj.points,
-    image: `https://via.placeholder.com/320x200.png?text=${encodeURIComponent(baseName)}`
-  };
-});
-
-function spinCar() {
-  const totalChance = cars.reduce((sum, car) => sum + car.chance * luck, 0);
-  let rand = Math.random() * totalChance;
-  let cumulative = 0;
-  for (let car of cars) {
-    cumulative += car.chance * luck;
-    if (rand < cumulative) {
-      showCar(car);
-      points += car.points;
-      document.getElementById("notification").textContent = `You got ${car.name}! +${car.points} points`;
-      if (!unlocked.includes(car.name)) unlocked.push(car.name);
-      saveGame();
-      updateIndex();
-      return;
+    let points = parseInt(localStorage.getItem("points") || "0");
+    let luck = parseFloat(localStorage.getItem("luck") || "1.0");
+    let username = localStorage.getItem("username");
+    if (!username || bannedWords.some(w => w.test(username))) {
+      do {
+        username = prompt("Enter a username (no bad words):");
+      } while (!username || bannedWords.some(w => w.test(username)));
+      localStorage.setItem("username", username);
     }
-  }
-}
 
-function showCar(car) {
-  document.getElementById("carName").textContent = car.name;
-  document.getElementById("carRarity").textContent = `${car.rarity} (Chance: ${(car.chance * 100).toFixed(5)}%)`;
-  document.getElementById("carImage").src = car.image;
-}
+    document.getElementById("chatInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        let msg = this.value;
+        bannedWords.forEach(word => msg = msg.replace(word, "***"));
+        const div = document.createElement("div");
+        div.textContent = `${username}: ${msg}`;
+        document.getElementById("chatMessages").appendChild(div);
+        this.value = "";
+      }
+    });
 
-function upgradeLuck() {
-  const cost = Math.floor(100 * luck);
-  if (points >= cost) {
-    points -= cost;
-    luck += 0.1;
-    document.getElementById("notification").textContent = `Luck upgraded! Now: ${luck.toFixed(2)}x`;
-    saveGame();
-  } else {
-    document.getElementById("notification").textContent = "Not enough points!";
-  }
-}
-
-function saveGame() {
-  localStorage.setItem("points", points);
-  localStorage.setItem("luck", luck);
-  localStorage.setItem("unlocked", JSON.stringify(unlocked));
-  updateStatus();
-}
-
-function updateStatus() {
-  document.getElementById("onlineStatus").textContent = "Online: 1";
-  document.getElementById("currentLuck").textContent = `Current Luck: ${luck.toFixed(2)}x`;
-}
-
-function showSection(id) {
-  ["home", "shopSection", "leaderboardSection", "indexSection"].forEach(sec => {
-    document.getElementById(sec).style.display = sec === id ? "block" : "none";
-  });
-}
-
-function updateIndex() {
-  const grid = document.getElementById("carGrid");
-  grid.innerHTML = "";
-  cars.forEach(car => {
-    const div = document.createElement("div");
-    div.className = "car-tile" + (unlocked.includes(car.name) ? "" : " locked");
-    div.innerHTML = `
-      <img src="${car.image}" />
-      <div>${unlocked.includes(car.name) ? car.name : "Locked"}</div>
-    `;
-    grid.appendChild(div);
-  });
-}
-
-const chatInput = document.getElementById("chatInput");
-chatInput.addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    const msg = this.value.trim();
-    if (msg) {
-      const filtered = msg.replace(/fuck|shit|bitch/gi, "***");
-      const entry = document.createElement("div");
-      entry.textContent = `${username}: ${filtered}`;
-      document.getElementById("chatMessages").appendChild(entry);
-      this.value = "";
+    function spinCar() {
+      const total = cars.reduce((sum, c) => sum + c.chance * luck, 0);
+      const rand = Math.random() * total;
+      let cumulative = 0;
+      for (const car of cars) {
+        cumulative += car.chance * luck;
+        if (rand <= cumulative) {
+          showCar(car);
+          points += car.points;
+          localStorage.setItem("points", points);
+          if (car.rarity === "???" || car.rarity === "Legendary") launchConfetti();
+          break;
+        }
+      }
     }
-  }
-});
 
-function toggleChatBox() {
-  const chat = document.getElementById('chatBox');
-  chat.style.display = chat.style.display === 'none' ? 'block' : 'none';
-}
+    function showCar(car) {
+      document.getElementById("carName").textContent = car.name;
+      document.getElementById("carRarity").textContent = `${car.rarity} (+${car.points}pts)`;
+      document.getElementById("carImage").src = car.image;
+      document.getElementById("notification").textContent = `You got ${car.name}!`;
+    }
 
-window.onload = () => {
-  updateIndex();
-  updateStatus();
-  showSection("home");
-};
+    function upgradeLuck() {
+      const cost = Math.floor(100 * luck);
+      if (points >= cost) {
+        points -= cost;
+        luck += 0.1;
+        localStorage.setItem("points", points);
+        localStorage.setItem("luck", luck);
+        document.getElementById("notification").textContent = `Luck upgraded to ${luck.toFixed(2)}x!`;
+      } else {
+        document.getElementById("notification").textContent = "Not enough points!";
+      }
+    }
+
+    function launchConfetti() {
+      const canvas = document.getElementById("confettiCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      for (let i = 0; i < 300; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
+        ctx.fillRect(x, y, 4, 4);
+      }
+      setTimeout(() => ctx.clearRect(0, 0, canvas.width, canvas.height), 2000);
+    }
   </script>
 </body>
 </html>

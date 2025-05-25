@@ -1,184 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Car Spin Madness Pro</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #141e30, #243b55);
-      color: white;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 40px;
-      background-color: #1f2937;
-      align-items: center;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 24px;
-      color: #e2e8f0;
-    }
-    nav button {
-      background: #ef4444;
-      border: none;
-      padding: 10px 16px;
-      margin-left: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      color: white;
-      transition: background-color 0.3s ease;
-    }
-    nav button:hover {
-      background-color: #dc2626;
-    }
-    #onlineStatus, #pointsStatus {
-      font-weight: 600;
-      font-size: 14px;
-      color: #94a3b8;
-    }
-    main {
-      padding: 100px 20px 40px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    #carCard {
-      background-color: #1e293b;
-      border-radius: 20px;
-      padding: 20px;
-      margin-top: 40px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-      transition: transform 0.4s ease;
-    }
-    #carCard img {
-      max-width: 300px;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.8);
-      margin-top: 20px;
-    }
-    #carName {
-      font-size: 26px;
-      margin: 10px 0 5px;
-    }
-    #carRarity {
-      font-size: 18px;
-      font-weight: 600;
-      color: #facc15;
-      margin-bottom: 10px;
-    }
-    button.actionBtn {
-      background: #ef4444;
-      border: none;
-      color: white;
-      padding: 12px 24px;
-      font-weight: 700;
-      font-size: 18px;
-      border-radius: 12px;
-      cursor: pointer;
-      margin: 10px 12px 10px 0;
-      transition: background-color 0.3s ease;
-    }
-    button.actionBtn:hover {
-      background: #dc2626;
-    }
-    #notification {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #ef4444;
-      padding: 15px 30px;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 16px;
-      display: none;
-      box-shadow: 0 4px 20px rgba(239,68,68,0.7);
-    }
-    #chatBox {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 280px;
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-    }
-    #chatMessages {
-      height: 140px;
-      overflow-y: auto;
-      font-size: 14px;
-      margin-bottom: 12px;
-      color: #e0e7ff;
-    }
-    #chatInput {
-      border-radius: 8px;
-      border: none;
-      padding: 10px;
-      font-size: 14px;
-    }
-    #shopSection, #leaderboardSection {
-      display: none;
-      background: #1e293b;
-      border-radius: 20px;
-      padding: 30px;
-      margin-top: 40px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      color: white;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #374151;
-      text-align: left;
-    }
-    th {
-      background: #374151;
-    }
-    tr:hover {
-      background: #475569;
-    }
-    .rarity-legend span {
-      display: inline-block;
-      margin-right: 15px;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 12px;
-      user-select: none;
-    }
-    .rarity-common { background: #a3a3a3; color: black; }
-    .rarity-uncommon { background: #3b82f6; }
-    .rarity-epic { background: #c084fc; }
-    .rarity-legendary { background: #facc15; color: black; }
-    .rarity-exotic { background: #06b6d4; }
-    .rarity-mythic { background: #ef4444; }
-    .rarity-unknown { background: #22c55e; }
-  </style>
+<meta charset="UTF-8" />
+<title>Car Spin Madness Pro</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    color: white;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background-color: #1f2937;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #e2e8f0;
+    cursor: pointer;
+  }
+  nav button {
+    background: #ef4444;
+    border: none;
+    padding: 10px 16px;
+    margin-left: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  nav button:hover {
+    background-color: #dc2626;
+  }
+  #onlineStatus, #pointsStatus {
+    font-weight: 600;
+    font-size: 14px;
+    color: #94a3b8;
+  }
+  main {
+    padding: 100px 20px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  #carCard {
+    background-color: #1e293b;
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 40px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    transition: transform 3s ease;
+  }
+  #carCard img {
+    max-width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    margin-top: 20px;
+  }
+  #carName {
+    font-size: 26px;
+    margin: 10px 0 5px;
+  }
+  #carRarity {
+    font-size: 18px;
+    font-weight: 600;
+    color: #facc15;
+    margin-bottom: 10px;
+  }
+  button.actionBtn {
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    margin: 10px 12px 10px 0;
+    transition: background-color 0.3s ease;
+  }
+  button.actionBtn:hover {
+    background: #dc2626;
+  }
+  #notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ef4444;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 16px;
+    display: none;
+    box-shadow: 0 4px 20px rgba(239,68,68,0.7);
+  }
+  #chatBox {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 280px;
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+  }
+  #chatMessages {
+    height: 140px;
+    overflow-y: auto;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: #e0e7ff;
+  }
+  #chatInput {
+    border-radius: 8px;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+  }
+  #shopSection, #leaderboardSection, #indexSection {
+    display: none;
+    background: #1e293b;
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 40px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+  }
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #374151;
+    text-align: left;
+  }
+  th {
+    background: #374151;
+  }
+  tr:hover {
+    background: #475569;
+  }
+  .rarity-legend span {
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 12px;
+    user-select: none;
+  }
+  .rarity-common { background: #a3a3a3; color: black; }
+  .rarity-uncommon { background: #3b82f6; }
+  .rarity-epic { background: #c084fc; }
+  .rarity-legendary { background: #facc15; color: black; }
+  .rarity-exotic { background: #06b6d4; }
+  .rarity-mythic { background: #ef4444; }
+  .rarity-unknown { background: #22c55e; }
+
+  /* Index cars grid */
+  #indexGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(120px,1fr));
+    gap: 15px;
+  }
+  .carCardIndex {
+    background: #334155;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    cursor: default;
+  }
+  .carCardIndex.locked {
+    background: #000;
+    color: #000;
+  }
+  .carCardIndex img {
+    width: 100%;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+</style>
 </head>
 <body>
   <header>
     <div id="onlineStatus">Online: 1</div>
-    <h1>Car Spin Madness Pro</h1>
+    <h1 onclick="showSection('mainSection')">Car Spin Madness Pro</h1>
     <div id="pointsStatus">Points: 0 | Luck: 1.0x</div>
     <nav>
       <button onclick="showSection('mainSection')">Home</button>
       <button onclick="showSection('shopSection')">Shop</button>
       <button onclick="showSection('leaderboardSection')">Leaderboard</button>
+      <button onclick="showSection('indexSection')">Index</button>
     </nav>
   </header>
   <main>
@@ -202,6 +230,7 @@
         <span class="rarity-unknown">???: +100pt</span>
       </div>
     </section>
+
     <section id="shopSection">
       <h2>🛒 Shop</h2>
       <p>Upgrade your luck for better cars!</p>
@@ -237,6 +266,12 @@
         <tbody></tbody>
       </table>
     </section>
+
+    <section id="indexSection">
+      <h2>📋 Car Index</h2>
+      <p>Unlocked cars are visible. Locked cars are hidden.</p>
+      <div id="indexGrid"></div>
+    </section>
   </main>
 
   <div id="notification"></div>
@@ -247,6 +282,7 @@
   </div>
 
   <script>
+    // --- DATA ---
     const cars = [
       {name: "Tesla Model 3", rarity: "Common", chance: 0.35, points: 1, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Tesla_Model_3_parked%2C_front_driver_side%2C_26_August_2020.jpg/320px-Tesla_Model_3_parked%2C_front_driver_side%2C_26_August_2020.jpg"},
       {name: "BMW M3", rarity: "Uncommon", chance: 0.25, points: 2, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/BMW_M3_E92_Coup%C3%A9.JPG/320px-BMW_M3_E92_Coup%C3%A9.JPG"},
@@ -255,9 +291,18 @@
       {name: "Bugatti Chiron", rarity: "Exotic", chance: 0.045, points: 25, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Bugatti_Chiron_IMG_0463.jpg/320px-Bugatti_Chiron_IMG_0463.jpg"},
       {name: "Ferrari LaFerrari", rarity: "Mythic", chance: 0.0045, points: 50, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Ferrari_LaFerrari_Paris_2013_06.jpg/320px-Ferrari_LaFerrari_Paris_2013_06.jpg"},
       {name: "???", rarity: "???", chance: 0.00028, points: 10000, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Question_mark_white.svg/320px-Question_mark_white.svg.png"},
-      // flere biler kan legges til i en separat JSON for ytelse
+      {name: "Audi RS7", rarity: "Epic", chance: 0.013, points: 5, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Audi_RS7_Sportback_IMG_0506.jpg/320px-Audi_RS7_Sportback_IMG_0506.jpg"},
+      {name: "BMW Z4", rarity: "Uncommon", chance: 0.20, points: 2, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/BMW_Z4_M40i_2020_IMG_0436.jpg/320px-BMW_Z4_M40i_2020_IMG_0436.jpg"},
+      {name: "Dodge Challenger", rarity: "Legendary", chance: 0.008, points: 10, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/2015_Dodge_Challenger_SRT_Hellcat_front_5.24.19.jpg/320px-2015_Dodge_Challenger_SRT_Hellcat_front_5.24.19.jpg"},
+      {name: "Tesla Model Y Performance", rarity: "Epic", chance: 0.011, points: 5, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Tesla_Model_Y_Performance_IMG_0076.jpg/320px-Tesla_Model_Y_Performance_IMG_0076.jpg"},
+      {name: "Chevrolet Corvette Stingray", rarity: "Legendary", chance: 0.007, points: 10, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/2014_Chevrolet_Corvette_Stingray_front_6.6.14.jpg/320px-2014_Chevrolet_Corvette_Stingray_front_6.6.14.jpg"},
+      {name: "Ford Mustang Shelby GT500", rarity: "Mythic", chance: 0.0025, points: 50, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Ford_Mustang_Shelby_GT500_2013_Front.jpg/320px-Ford_Mustang_Shelby_GT500_2013_Front.jpg"},
+      {name: "Lamborghini Centenario", rarity: "Mythic", chance: 0.001, points: 50, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Lamborghini_Centenario_LP_770-4_IMG_0504.jpg/320px-Lamborghini_Centenario_LP_770-4_IMG_0504.jpg"},
+      {name: "Ferrari Enzo", rarity: "Mythic", chance: 0.001, points: 50, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Ferrari_Enzo_IMG_0418.jpg/320px-Ferrari_Enzo_IMG_0418.jpg"}
+      // Her kan du legge til flere biler for å nå 50+
     ];
 
+    // --- STATE ---
     let points = 0;
     let luck = 1.0;
     let spinSpeed = 3000;
@@ -266,8 +311,13 @@
     let chatColorUnlocked = false;
     let username = localStorage.getItem("carSpinUsername") || "";
 
+    // Unlocked cars - last spin cars stored here
+    let unlockedCars = JSON.parse(localStorage.getItem("unlockedCars") || "[]");
+
+    // Chat banning filter list
     const bannedWords = ["fuck", "shit", "bitch", "asshole", "damn"];
 
+    // --- INITIALIZATION ---
     document.getElementById('chatInput').disabled = true;
 
     window.onload = () => {
@@ -279,11 +329,13 @@
       }
       updateLeaderboards();
       updateShop();
+      updateIndex();
       setInterval(() => {
         incrementTimePlayed();
       }, 1000);
     };
 
+    // Username prompt
     function askUsername() {
       let name = prompt("Enter your username:");
       while (!name || name.trim().length === 0 || name.trim().length > 12) {
@@ -295,6 +347,7 @@
       showNotification(`Welcome, ${username}!`);
     }
 
+    // Chat init
     function initChat() {
       document.getElementById('chatInput').disabled = false;
       document.getElementById('chatInput').focus();
@@ -309,11 +362,13 @@
       });
     }
 
+    // Send message to chat (with filter)
     function sendMessage(msg) {
       const filtered = filterBadWords(msg);
       addChatMessage(username, filtered);
     }
 
+    // Add chat message
     function addChatMessage(user, msg) {
       const chatMessages = document.getElementById('chatMessages');
       const messageElem = document.createElement('div');
@@ -323,6 +378,7 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    // Filter bad words
     function filterBadWords(text) {
       let filteredText = text;
       bannedWords.forEach(word => {
@@ -332,6 +388,7 @@
       return filteredText;
     }
 
+    // Show notification
     function showNotification(text) {
       const notif = document.getElementById('notification');
       notif.textContent = text;
@@ -341,24 +398,47 @@
       }, 3500);
     }
 
+    // Update status bar
     function updateStatus() {
       document.getElementById('pointsStatus').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
-      document.getElementById('onlineStatus').textContent = `Online: 1`;
+      document.getElementById('onlineStatus').textContent = `Online: ${getRandomOnlineCount()}`;
     }
 
-    // Her er endret spinCar, spinner IKKE lenger, viser bil umiddelbart
+    // Random online count between 1 and 6 (simulate)
+    function getRandomOnlineCount() {
+      return Math.floor(Math.random() * 6) + 1;
+    }
+
+    // Spin car logic with animation
     function spinCar() {
       if (points < 0) {
         showNotification("You have no points to spin!");
         return;
       }
-      revealCar();
+
+      // Disable buttons while spinning
+      disableSpinButtons(true);
+
+      const carCard = document.getElementById('carCard');
+      carCard.style.transition = "transform 3s ease";
+      carCard.style.transform = "rotate(720deg)";
+
+      setTimeout(() => {
+        revealCar();
+        carCard.style.transform = "rotate(0deg)";
+        disableSpinButtons(false);
+      }, 3000);
     }
 
-    function revealCar() {
-      const adjustedCars = cars.map(car => {
-        return {...car, adjChance: car.chance * luck};
+    function disableSpinButtons(disable) {
+      document.querySelectorAll('.actionBtn').forEach(btn => {
+        btn.disabled = disable;
       });
+    }
+
+    // Reveal random car based on chance & luck
+    function revealCar() {
+      const adjustedCars = cars.map(car => ({...car, adjChance: car.chance * luck}));
       const sumChance = adjustedCars.reduce((acc, c) => acc + c.adjChance, 0);
       const rand = Math.random() * sumChance;
       let cumChance = 0;
@@ -372,15 +452,25 @@
         }
       }
 
+      // Update display
       document.getElementById('carName').textContent = selectedCar.name;
       document.getElementById('carRarity').textContent = selectedCar.rarity + ` (Chance: ${(selectedCar.chance * 100).toFixed(5)}%)`;
       document.getElementById('carRarity').className = "rarity-" + selectedCar.rarity.toLowerCase().replace(/\?/g, 'unknown');
       document.getElementById('carImage').src = selectedCar.image;
 
+      // Update points
       points += selectedCar.points + Math.floor(selectedCar.points * bonusPoints);
       updateStatus();
       updateLeaderboards();
 
+      // Add to unlocked cars if not present
+      if (!unlockedCars.find(c => c.name === selectedCar.name)) {
+        unlockedCars.push(selectedCar);
+        localStorage.setItem("unlockedCars", JSON.stringify(unlockedCars));
+        updateIndex();
+      }
+
+      // Notify for ??? rarity
       if (selectedCar.rarity === "???") {
         addChatMessage("GLOBAL", `${username} pulled the rare ??? car! Congratulations!`);
       }
@@ -388,8 +478,9 @@
       showNotification(`You got ${selectedCar.name} (${selectedCar.rarity})! +${selectedCar.points} points`);
     }
 
+    // Upgrade luck cost and logic
     function upgradeLuck() {
-      const cost = Math.floor(100 * luck * luck);
+      const cost = Math.floor(100 * luck * luck); // cost grows quadratically
       if (points < cost) {
         showNotification("Not enough points to upgrade luck!");
         return;
@@ -401,6 +492,7 @@
       showNotification(`Luck upgraded! Current luck: ${luck.toFixed(2)}x`);
     }
 
+    // Buy other upgrades
     function buyUpgrade(type) {
       let cost, success;
       switch (type) {
@@ -412,7 +504,7 @@
             return;
           }
           points -= cost;
-          spinSpeed -= 500;
+          spinSpeed -= 500; // faster spin
           showNotification("Spin speed upgraded!");
           break;
         case 'bonusPoints':
@@ -446,6 +538,7 @@
       updateLeaderboards();
     }
 
+    // Update shop button text with dynamic costs
     function updateShop() {
       const upgradeBtn = document.getElementById("upgradeLuckBtn");
       const nextCost = Math.floor(100 * luck * luck);
@@ -453,25 +546,29 @@
       document.getElementById("currentLuck").textContent = `Current Luck: ${luck.toFixed(2)}x`;
     }
 
+    // Show/hide sections
     function showSection(sectionId) {
-      ['mainSection', 'shopSection', 'leaderboardSection'].forEach(id => {
+      ['mainSection', 'shopSection', 'leaderboardSection', 'indexSection'].forEach(id => {
         document.getElementById(id).style.display = (id === sectionId) ? 'block' : 'none';
       });
     }
 
+    // Update leaderboards from localStorage
     function updateLeaderboards() {
       let leaderboard = JSON.parse(localStorage.getItem("carSpinLeaderboard") || "[]");
       let timePlayed = JSON.parse(localStorage.getItem("carSpinTimePlayed") || "{}");
       let luckMap = JSON.parse(localStorage.getItem("carSpinLuck") || "{}");
 
+      // Add or update current player data
       const played = JSON.parse(localStorage.getItem("carSpinSecondsPlayed") || "0");
-      const totalPlayed = played || 0;
       leaderboard = leaderboard.filter(p => p.name !== username);
       leaderboard.push({name: username, points: points});
       leaderboard.sort((a,b) => b.points - a.points);
 
+      // Save updated leaderboard
       localStorage.setItem("carSpinLeaderboard", JSON.stringify(leaderboard));
 
+      // Update points leaderboard table
       const pointsBody = document.querySelector("#pointsLeaderboard tbody");
       pointsBody.innerHTML = "";
       leaderboard.slice(0, 10).forEach((p, i) => {
@@ -480,6 +577,7 @@
         pointsBody.appendChild(row);
       });
 
+      // Update time played leaderboard table
       const timeBody = document.querySelector("#timeLeaderboard tbody");
       timeBody.innerHTML = "";
       const timeArray = Object.entries(timePlayed).map(([name, time]) => ({name, time}));
@@ -490,6 +588,7 @@
         timeBody.appendChild(row);
       });
 
+      // Update luck leaderboard table
       const luckBody = document.querySelector("#luckLeaderboard tbody");
       luckBody.innerHTML = "";
       const luckArray = Object.entries(luckMap).map(([name, l]) => ({name, luck: l}));
@@ -500,18 +599,37 @@
         luckBody.appendChild(row);
       });
 
+      // Save current luck
       luckMap[username] = luck;
       localStorage.setItem("carSpinLuck", JSON.stringify(luckMap));
     }
 
+    // Increment time played
     let secondsPlayed = parseInt(localStorage.getItem("carSpinSecondsPlayed") || "0", 10);
-    setInterval(() => {
+    function incrementTimePlayed() {
       secondsPlayed++;
       localStorage.setItem("carSpinSecondsPlayed", secondsPlayed);
       updateLeaderboards();
       updateStatus();
-    }, 1000);
+    }
+    setInterval(incrementTimePlayed, 1000);
 
+    // Update Index with unlocked cars
+    function updateIndex() {
+      const grid = document.getElementById("indexGrid");
+      grid.innerHTML = "";
+      cars.forEach(car => {
+        const unlocked = unlockedCars.find(c => c.name === car.name);
+        const card = document.createElement("div");
+        card.className = "carCardIndex";
+        if (!unlocked) card.classList.add("locked");
+        card.innerHTML = `
+          <img src="${unlocked ? car.image : 'https://via.placeholder.com/300x200/000000/000000?text=Locked'}" alt="${car.name}" />
+          <div>${unlocked ? car.name : ""}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
   </script>
 </body>
 </html>

@@ -6,55 +6,80 @@
   <title>Real Car Name Generator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
-      margin-top: 100px;
-      background: #111;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       color: #fff;
+      padding: 50px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
     }
     button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #00bfff;
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #ff4c4c;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       color: white;
       margin-top: 20px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #ff1c1c;
+    }
+    #carCard {
+      margin-top: 40px;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      display: inline-block;
     }
     #carName {
-      font-size: 24px;
-      margin-top: 40px;
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+    #carImage {
+      width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
   </style>
 </head>
 <body>
   <h1>🚘 Real Car Name Generator</h1>
-  <p>Click the button to generate a real car model name</p>
+  <p>Click the button to generate a real car model with an image!</p>
   <button onclick="generateCarName()">Generate Car</button>
-  <div id="carName"></div>
+
+  <div id="carCard" style="display:none;">
+    <div id="carName"></div>
+    <img id="carImage" src="" alt="Car Image">
+  </div>
 
   <script>
-    const carModels = [
-      "Toyota Supra", "Toyota Corolla", "Toyota Camry", "Honda Civic", "Honda Accord", "Honda NSX",
-      "Nissan GT-R", "Nissan 370Z", "Mazda RX-7", "Mazda MX-5", "Mitsubishi Lancer Evo",
-      "Subaru WRX STI", "BMW M3", "BMW M4", "BMW i8", "Audi RS6", "Audi R8",
-      "Mercedes-AMG GT", "Mercedes C63", "Volkswagen Golf GTI", "Porsche 911", "Porsche Cayman",
-      "Lamborghini Huracán", "Lamborghini Aventador", "Ferrari 488", "Ferrari F8 Tributo",
-      "McLaren 720S", "McLaren P1", "Bugatti Chiron", "Bugatti Veyron", "Koenigsegg Jesko",
-      "Pagani Huayra", "Ford Mustang", "Ford GT", "Chevrolet Camaro", "Chevrolet Corvette",
-      "Dodge Charger", "Dodge Challenger", "Jeep Wrangler", "Tesla Model S", "Tesla Roadster",
-      "Lucid Air", "Rimac Nevera", "Alfa Romeo Giulia", "Aston Martin DB11", "Bentley Continental GT",
-      "Rolls-Royce Phantom", "Citroën DS", "Peugeot 208", "Renault Clio", "Volvo XC90",
-      "Saab 9-5", "Lexus LFA", "Infiniti Q60", "Hyundai i30 N", "Kia Stinger GT"
-      // Listen kan utvides med tusenvis til senere
+    const cars = [
+      { name: "Toyota Supra", img: "https://cdn.motor1.com/images/mgl/BEvvX/s3/toyota-supra.jpg" },
+      { name: "BMW M4", img: "https://cdn.bmwblog.com/wp-content/uploads/2021/03/2021-bmw-m4-competition-review-24.jpg" },
+      { name: "Nissan GT-R", img: "https://upload.wikimedia.org/wikipedia/commons/4/45/Nissan_GT-R.jpg" },
+      { name: "Lamborghini Aventador", img: "https://cdn.motor1.com/images/mgl/WJ8gx/s3/lamborghini-aventador-svj.jpg" },
+      { name: "Ferrari F8 Tributo", img: "https://cdn.motor1.com/images/mgl/BJWxV/s3/ferrari-f8-tributo.jpg" },
+      { name: "Audi RS6", img: "https://cdn.motor1.com/images/mgl/7XlJN/s3/audi-rs6-avant.jpg" },
+      { name: "Tesla Model S", img: "https://cdn.motor1.com/images/mgl/0ANJ3/s3/2021-tesla-model-s.jpg" },
+      { name: "Ford Mustang", img: "https://cdn.motor1.com/images/mgl/0x6Xz/s3/2024-ford-mustang.jpg" },
+      { name: "Chevrolet Corvette", img: "https://cdn.motor1.com/images/mgl/MVVYo/s3/2020-chevrolet-corvette.jpg" },
+      { name: "McLaren 720S", img: "https://cdn.motor1.com/images/mgl/nYYp6/s3/mclaren-720s.jpg" }
     ];
 
     function generateCarName() {
-      const randomIndex = Math.floor(Math.random() * carModels.length);
-      const name = carModels[randomIndex];
-      document.getElementById("carName").innerText = name;
+      const car = cars[Math.floor(Math.random() * cars.length)];
+      document.getElementById("carCard").style.display = "block";
+      document.getElementById("carName").innerText = car.name;
+      document.getElementById("carImage").src = car.img;
+      document.getElementById("carImage").alt = car.name;
     }
   </script>
 </body>
 </html>
+

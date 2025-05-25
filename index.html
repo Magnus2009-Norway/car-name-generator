@@ -288,13 +288,8 @@
       }, 1000);
     };
 
-    // ... Fortsett i del 3
-  </script>
-</body>
-</html>
-   // --- FUNKSJONER ---
+    // --- FUNCTIONS ---
 
-  // Username prompt
     function askUsername() {
       let name = prompt("Enter your username:");
       while (!name || name.trim().length === 0 || name.trim().length > 12) {
@@ -306,7 +301,6 @@
       showNotification(`Welcome, ${username}!`);
     }
 
-    // Chat init
     function initChat() {
       document.getElementById('chatInput').disabled = false;
       document.getElementById('chatInput').focus();
@@ -321,13 +315,11 @@
       });
     }
 
-    // Send message to chat (with filter)
     function sendMessage(msg) {
       const filtered = filterBadWords(msg);
       addChatMessage(username, filtered);
     }
 
-    // Add chat message
     function addChatMessage(user, msg) {
       const chatMessages = document.getElementById('chatMessages');
       const messageElem = document.createElement('div');
@@ -337,7 +329,6 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Filter bad words
     function filterBadWords(text) {
       let filteredText = text;
       bannedWords.forEach(word => {
@@ -347,7 +338,6 @@
       return filteredText;
     }
 
-    // Show notification
     function showNotification(text) {
       const notif = document.getElementById('notification');
       notif.textContent = text;
@@ -357,13 +347,11 @@
       }, 3500);
     }
 
-    // Update status bar
     function updateStatus() {
       document.getElementById('pointsStatus').textContent = `Points: ${points} | Luck: ${luck.toFixed(2)}x`;
       document.getElementById('onlineStatus').textContent = `Online: 1`; // static for now
     }
 
-    // Spin car logic
     function spinCar() {
       if (points < 0) {
         showNotification("You have no points to spin!");
@@ -389,7 +377,6 @@
       }, interval);
     }
 
-    // Reveal random car based on chance & luck
     function revealCar() {
       let chanceTotal = 0;
       const adjustedCars = cars.map(car => {
@@ -409,27 +396,24 @@
         }
       }
 
-      // Update display
       document.getElementById('carName').textContent = selectedCar.name;
       document.getElementById('carRarity').textContent = selectedCar.rarity + ` (Chance: ${(selectedCar.chance * 100).toFixed(5)}%)`;
       document.getElementById('carRarity').className = "rarity-" + selectedCar.rarity.toLowerCase().replace(/\?/g, 'unknown');
       document.getElementById('carImage').src = selectedCar.image;
 
-      // Update points
       points += selectedCar.points + Math.floor(selectedCar.points * bonusPoints);
       updateStatus();
       updateLeaderboards();
 
-      // Notify for ??? rarity
       if (selectedCar.rarity === "???") {
         addChatMessage("GLOBAL", `${username} pulled the rare ??? car! Congratulations!`);
       }
 
       showNotification(`You got ${selectedCar.name} (${selectedCar.rarity})! +${selectedCar.points} points`);
     }
-    // Upgrade luck cost and logic
+
     function upgradeLuck() {
-      const cost = Math.floor(100 * luck * luck); // cost grows quadratically
+      const cost = Math.floor(100 * luck * luck);
       if (points < cost) {
         showNotification("Not enough points to upgrade luck!");
         return;
@@ -441,7 +425,6 @@
       showNotification(`Luck upgraded! Current luck: ${luck.toFixed(2)}x`);
     }
 
-    // Buy other upgrades
     function buyUpgrade(type) {
       let cost, success;
       switch (type) {
@@ -453,7 +436,7 @@
             return;
           }
           points -= cost;
-          spinSpeed -= 500; // faster spin
+          spinSpeed -= 500;
           showNotification("Spin speed upgraded!");
           break;
         case 'bonusPoints':
@@ -487,7 +470,6 @@
       updateLeaderboards();
     }
 
-    // Update shop button text with dynamic costs
     function updateShop() {
       const upgradeBtn = document.getElementById("upgradeLuckBtn");
       const nextCost = Math.floor(100 * luck * luck);
@@ -495,31 +477,25 @@
       document.getElementById("currentLuck").textContent = `Current Luck: ${luck.toFixed(2)}x`;
     }
 
-    // Show/hide sections
     function showSection(sectionId) {
       ['mainSection', 'shopSection', 'leaderboardSection'].forEach(id => {
         document.getElementById(id).style.display = (id === sectionId) ? 'block' : 'none';
       });
     }
 
-    // Update leaderboards from localStorage
     function updateLeaderboards() {
       let leaderboard = JSON.parse(localStorage.getItem("carSpinLeaderboard") || "[]");
       let timePlayed = JSON.parse(localStorage.getItem("carSpinTimePlayed") || "{}");
       let luckMap = JSON.parse(localStorage.getItem("carSpinLuck") || "{}");
 
-      // Add or update current player data
-      const now = Date.now();
       const played = JSON.parse(localStorage.getItem("carSpinSecondsPlayed") || "0");
       const totalPlayed = played || 0;
       leaderboard = leaderboard.filter(p => p.name !== username);
       leaderboard.push({name: username, points: points});
       leaderboard.sort((a,b) => b.points - a.points);
 
-      // Save updated leaderboard
       localStorage.setItem("carSpinLeaderboard", JSON.stringify(leaderboard));
 
-      // Update points leaderboard table
       const pointsBody = document.querySelector("#pointsLeaderboard tbody");
       pointsBody.innerHTML = "";
       leaderboard.slice(0, 10).forEach((p, i) => {
@@ -528,7 +504,6 @@
         pointsBody.appendChild(row);
       });
 
-      // Update time played leaderboard table
       const timeBody = document.querySelector("#timeLeaderboard tbody");
       timeBody.innerHTML = "";
       const timeArray = Object.entries(timePlayed).map(([name, time]) => ({name, time}));
@@ -539,7 +514,6 @@
         timeBody.appendChild(row);
       });
 
-      // Update luck leaderboard table
       const luckBody = document.querySelector("#luckLeaderboard tbody");
       luckBody.innerHTML = "";
       const luckArray = Object.entries(luckMap).map(([name, l]) => ({name, luck: l}));
@@ -550,11 +524,10 @@
         luckBody.appendChild(row);
       });
 
-      // Save current luck
       luckMap[username] = luck;
       localStorage.setItem("carSpinLuck", JSON.stringify(luckMap));
     }
-    // Increment time played
+
     let secondsPlayed = parseInt(localStorage.getItem("carSpinSecondsPlayed") || "0", 10);
     setInterval(() => {
       secondsPlayed++;
@@ -562,9 +535,6 @@
       updateLeaderboards();
       updateStatus();
     }, 1000);
-
-    // Chat color unlocked state
-    let chatColorUnlocked = false;
 
   </script>
 </body>

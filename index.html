@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real Car Name Generator</title>
+  <title>Ultimate Car Name Generator</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      background: linear-gradient(to right, #141e30, #243b55);
       color: #fff;
       padding: 50px;
     }
@@ -36,58 +36,86 @@
       background-color: rgba(255, 255, 255, 0.1);
       border-radius: 15px;
       display: inline-block;
+      transition: 0.3s ease-in-out;
     }
     #carName {
       font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    #rarity {
+      font-weight: bold;
       margin-bottom: 15px;
     }
     #carImage {
       width: 300px;
+      height: auto;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
   </style>
 </head>
 <body>
-  <h1>🚘 Real Car Name Generator</h1>
-  <p>Click the button to generate a real car model with an image!</p>
-  <button onclick="generateCarName()">Generate Car</button>
+  <h1>🚘 Ultimate Car Name Generator</h1>
+  <p>Click the button to spin and reveal a random car!</p>
+  <button onclick="spinCar()">🎰 Spin Car</button>
 
   <div id="carCard" style="display:none;">
     <div id="carName"></div>
+    <div id="rarity"></div>
     <img id="carImage" src="" alt="Car Image">
   </div>
 
   <script>
     const cars = [
-      { name: "Toyota Supra", img: "https://cdn.motor1.com/images/mgl/BEvvX/s3/toyota-supra.jpg" },
-      { name: "BMW M4", img: "https://cdn.bmwblog.com/wp-content/uploads/2021/03/2021-bmw-m4-competition-review-24.jpg" },
-      { name: "Nissan GT-R", img: "https://upload.wikimedia.org/wikipedia/commons/4/45/Nissan_GT-R.jpg" },
-      { name: "Lamborghini Aventador", img: "https://cdn.motor1.com/images/mgl/WJ8gx/s3/lamborghini-aventador-svj.jpg" },
-      { name: "Ferrari F8 Tributo", img: "https://cdn.motor1.com/images/mgl/BJWxV/s3/ferrari-f8-tributo.jpg" },
-      { name: "Audi RS6", img: "https://cdn.motor1.com/images/mgl/7XlJN/s3/audi-rs6-avant.jpg" },
-      { name: "Tesla Model S", img: "https://cdn.motor1.com/images/mgl/0ANJ3/s3/2021-tesla-model-s.jpg" },
-      { name: "Ford Mustang", img: "https://cdn.motor1.com/images/mgl/0x6Xz/s3/2024-ford-mustang.jpg" },
-      { name: "Chevrolet Corvette", img: "https://cdn.motor1.com/images/mgl/MVVYo/s3/2020-chevrolet-corvette.jpg" },
-      { name: "McLaren 720S", img: "https://cdn.motor1.com/images/mgl/nYYp6/s3/mclaren-720s.jpg" },
-      { name: "Pagani Huayra", img: "https://cdn.motor1.com/images/mgl/vmJ2E/s3/pagani-huayra-roadster.jpg" },
-      { name: "Koenigsegg Jesko", img: "https://cdn.motor1.com/images/mgl/L1kpP/s3/koenigsegg-jesko.jpg" },
-      { name: "Bugatti Chiron", img: "https://cdn.motor1.com/images/mgl/qWj2E/s3/bugatti-chiron.jpg" },
-      { name: "Porsche 911", img: "https://cdn.motor1.com/images/mgl/0ANzX/s3/porsche-911-turbo.jpg" },
-      { name: "Dodge Challenger", img: "https://cdn.motor1.com/images/mgl/QEJrN/s3/dodge-challenger-srt.jpg" },
-      { name: "Mazda RX-7", img: "https://cdn.motor1.com/images/mgl/nV9zO/s3/mazda-rx-7.jpg" },
-      { name: "Subaru WRX STI", img: "https://cdn.motor1.com/images/mgl/kbbZz/s3/subaru-wrx-sti.jpg" },
-      { name: "Honda NSX", img: "https://cdn.motor1.com/images/mgl/0ANox/s3/honda-nsx.jpg" },
-      { name: "Mercedes-AMG GT", img: "https://cdn.motor1.com/images/mgl/0ANkx/s3/mercedes-amg-gt.jpg" },
-      { name: "Alfa Romeo Giulia", img: "https://cdn.motor1.com/images/mgl/0ANmX/s3/alfa-romeo-giulia.jpg" }
+      { name: "Toyota Supra", img: "https://upload.wikimedia.org/wikipedia/commons/f/f2/2019_Toyota_Supra_3.0_Front.jpg", rarity: "Epic" },
+      { name: "Honda Civic", img: "https://upload.wikimedia.org/wikipedia/commons/3/35/2022_Honda_Civic_Sport_in_Sonic_Gray_Pearl%2C_Front_Left%2C_12-24-2021.jpg", rarity: "Common" },
+      { name: "Bugatti Chiron", img: "https://upload.wikimedia.org/wikipedia/commons/9/96/Bugatti_Chiron_IMG_0305.jpg", rarity: "Exotic" },
+      { name: "Ferrari F40", img: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Ferrari_F40_2.jpg", rarity: "Legendary" },
+      { name: "Nissan GT-R", img: "https://upload.wikimedia.org/wikipedia/commons/d/d1/Nissan_GT-R_50th_Anniversary_Edition_Genf_2019_1Y7A5666.jpg", rarity: "Uncommon" },
+      { name: "Lamborghini Aventador", img: "https://upload.wikimedia.org/wikipedia/commons/5/58/Lamborghini_Aventador_LP_700-4_%288266863182%29.jpg", rarity: "Mythic" },
+      { name: "Tesla Model 3", img: "https://upload.wikimedia.org/wikipedia/commons/4/44/2019_Tesla_Model_3_Performance_AWD_Front.jpg", rarity: "Common" },
+      { name: "Koenigsegg Jesko", img: "https://upload.wikimedia.org/wikipedia/commons/c/c2/Koenigsegg_Jesko_IMG_0086.jpg", rarity: "Hacker" },
+      { name: "McLaren 720S", img: "https://upload.wikimedia.org/wikipedia/commons/1/1b/McLaren_720S_Genf_2018.jpg", rarity: "Exotic" },
+      { name: "Mazda RX-7", img: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mazda_RX-7_Type_RB_Bathurst_R_Mazda_Museum.jpg", rarity: "Legendary" }
+      // Du kan enkelt legge til flere biler her senere!
     ];
 
-    function generateCarName() {
-      const car = cars[Math.floor(Math.random() * cars.length)];
-      document.getElementById("carCard").style.display = "block";
-      document.getElementById("carName").innerText = car.name;
-      document.getElementById("carImage").src = car.img;
-      document.getElementById("carImage").alt = car.name;
+    const rarityColors = {
+      "Common": "#ccc",
+      "Uncommon": "#76c7c0",
+      "Epic": "#a64ca6",
+      "Legendary": "#eab308",
+      "Mythic": "#f43f5e",
+      "Exotic": "#0ea5e9",
+      "Hacker": "#00ff00"
+    };
+
+    function spinCar() {
+      const carCard = document.getElementById("carCard");
+      const carName = document.getElementById("carName");
+      const carImage = document.getElementById("carImage");
+      const rarity = document.getElementById("rarity");
+
+      carCard.style.display = "block";
+      carName.innerText = "Spinning...";
+      carImage.src = "";
+      rarity.innerText = "";
+
+      let spinCount = 0;
+      const spinInterval = setInterval(() => {
+        const randomCar = cars[Math.floor(Math.random() * cars.length)];
+        carName.innerText = randomCar.name;
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(spinInterval);
+        const finalCar = cars[Math.floor(Math.random() * cars.length)];
+        carName.innerText = finalCar.name;
+        carImage.src = finalCar.img;
+        carImage.alt = finalCar.name;
+        rarity.innerText = finalCar.rarity;
+        rarity.style.color = rarityColors[finalCar.rarity] || "white";
+      }, 2000);
     }
   </script>
 </body>

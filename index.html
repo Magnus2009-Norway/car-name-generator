@@ -33,79 +33,53 @@
       font-size: 20px;
       color: #ffd700;
     }
-    h1 {
-      margin-top: 20px;
+    #sideButtons {
+      position: fixed;
+      right: 20px;
+      top: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 10px;
-      border-radius: 8px;
-      border: none;
+    #sideButtons button {
+      padding: 10px;
+      font-size: 14px;
       background-color: #ff4c4c;
       color: white;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
     }
-    button:hover {
+    #sideButtons button:hover {
       background-color: #e43e3e;
     }
-    #carCard, #shop, #leaderboard {
-      margin-top: 20px;
-      padding: 20px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
-    }
-    #carImage {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-    #rarityList {
-      margin-top: 30px;
-      text-align: left;
-    }
-    .rarity-item {
-      margin: 5px;
-    }
-    .shop-item {
-      margin: 10px 0;
-    }
-    table {
-      width: 100%;
-      margin-top: 10px;
-      color: white;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 8px;
-      border-bottom: 1px solid #555;
-    }
-    #popupOverlay {
+    #chatBox {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    #popupBox {
-      background: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      text-align: center;
-      color: #000;
-    }
-    #popupBox input {
+      right: 20px;
+      bottom: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
       padding: 10px;
-      font-size: 16px;
-      width: 80%;
-      margin-bottom: 10px;
+      border-radius: 10px;
+      max-width: 250px;
+      font-size: 14px;
+    }
+    #chatMessages {
+      max-height: 150px;
+      overflow-y: auto;
+      margin-bottom: 5px;
+    }
+    #chatMessages div {
+      margin: 2px 0;
+      background-color: rgba(255,255,255,0.1);
+      padding: 5px;
+      border-radius: 5px;
+    }
+    #chatInput {
+      width: 100%;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -114,6 +88,16 @@
     <div id="onlineNow">👥 Online now: ? players</div>
     <div id="usernameDisplay"></div>
     <div id="pointsDisplay">💰 Points: 0</div>
+  </div>
+
+  <div id="sideButtons">
+    <button onclick="scrollToSection('shop')">🛍️ Shop</button>
+    <button onclick="scrollToSection('leaderboard')">🏆 Leaderboard</button>
+  </div>
+
+  <div id="chatBox">
+    <div id="chatMessages"></div>
+    <input type="text" id="chatInput" placeholder="Si noe..." onkeydown="sendChat(event)">
   </div>
 
   <h1>🚗 Car Spin Generator</h1>
@@ -127,24 +111,23 @@
 
   <div id="rarityList">
     <h2>🎯 Rarities & Points</h2>
-    <div class="rarity-item" style="color:#ccc">Common = 1 point</div>
-    <div class="rarity-item" style="color:#76c7c0">Uncommon = 2 points</div>
-    <div class="rarity-item" style="color:#a64ca6">Epic = 5 points</div>
-    <div class="rarity-item" style="color:#eab308">Legendary = 10 points</div>
-    <div class="rarity-item" style="color:#f43f5e">Mythic = 25 points</div>
-    <div class="rarity-item" style="color:#0ea5e9">Exotic = 50 points</div>
-    <div class="rarity-item" style="color:#00ff00">Hacker = 100 points</div>
+    <div style="color:#ccc">Common = 1 point</div>
+    <div style="color:#76c7c0">Uncommon = 2 points</div>
+    <div style="color:#a64ca6">Epic = 5 points</div>
+    <div style="color:#eab308">Legendary = 10 points</div>
+    <div style="color:#f43f5e">Mythic = 25 points</div>
+    <div style="color:#0ea5e9">Exotic = 50 points</div>
+    <div style="color:#00ff00">Hacker = 100 points</div>
   </div>
 
   <div id="shop">
     <h2>🛒 Shop</h2>
-    <div class="shop-item"><button onclick="buyLucky(1.1, 100)">Lucky Chance 1.1x – 100 points</button></div>
-    <div class="shop-item"><button onclick="buyLucky(1.2, 250)">Lucky Chance 1.2x – 250 points</button></div>
-    <div class="shop-item"><button onclick="buyLucky(1.3, 500)">Lucky Chance 1.3x – 500 points</button></div>
-    <div class="shop-item"><button onclick="buyLucky(1.4, 1000)">Lucky Chance 1.4x – 1000 points</button></div>
-    <div class="shop-item"><button onclick="buyLucky(1.5, 2000)">Lucky Chance 1.5x – 2000 points</button></div>
-    <div class="shop-item">Current Lucky Chance: <span id="luckyChance">1.0x</span></div>
-    <div><button onclick="scrollToLeaderboard()">🏆 View Leaderboard</button></div>
+    <div><button onclick="buyLucky(1.1, 100)">Lucky Chance 1.1x – 100 points</button></div>
+    <div><button onclick="buyLucky(1.2, 250)">Lucky Chance 1.2x – 250 points</button></div>
+    <div><button onclick="buyLucky(1.3, 500)">Lucky Chance 1.3x – 500 points</button></div>
+    <div><button onclick="buyLucky(1.4, 1000)">Lucky Chance 1.4x – 1000 points</button></div>
+    <div><button onclick="buyLucky(1.5, 2000)">Lucky Chance 1.5x – 2000 points</button></div>
+    <div>Current Lucky Chance: <span id="luckyChance">1.0x</span></div>
   </div>
 
   <div id="leaderboard">
@@ -155,49 +138,16 @@
     </table>
   </div>
 
-  <div id="popupOverlay" style="display: none;">
-    <div id="popupBox">
-      <h2>Skriv inn brukernavn</h2>
-      <input type="text" id="usernameInput" placeholder="f.eks. Magnus2009">
-      <br>
-      <button onclick="saveUsername()">Start</button>
-    </div>
-  </div>
-
   <script>
-    const rarityPoints = {
-      Common: 1,
-      Uncommon: 2,
-      Epic: 5,
-      Legendary: 10,
-      Mythic: 25,
-      Exotic: 50,
-      Hacker: 100
-    };
-    const rarityColors = {
-      Common: "#ccc",
-      Uncommon: "#76c7c0",
-      Epic: "#a64ca6",
-      Legendary: "#eab308",
-      Mythic: "#f43f5e",
-      Exotic: "#0ea5e9",
-      Hacker: "#00ff00"
-    };
+    const rarityPoints = { Common: 1, Uncommon: 2, Epic: 5, Legendary: 10, Mythic: 25, Exotic: 50, Hacker: 100 };
+    const rarityColors = { Common: "#ccc", Uncommon: "#76c7c0", Epic: "#a64ca6", Legendary: "#eab308", Mythic: "#f43f5e", Exotic: "#0ea5e9", Hacker: "#00ff00" };
+
     let username = localStorage.getItem("username");
     if (!username) {
-      document.getElementById("popupOverlay").style.display = "flex";
-    } else {
-      document.getElementById("usernameDisplay").innerText = "👤 " + username;
-    }
-
-    function saveUsername() {
-      const input = document.getElementById("usernameInput").value.trim();
-      username = input || "Guest" + Math.floor(Math.random() * 9999);
+      username = prompt("Velg brukernavn til leaderboarden:") || "Guest" + Math.floor(Math.random() * 9999);
       localStorage.setItem("username", username);
-      document.getElementById("usernameDisplay").innerText = "👤 " + username;
-      document.getElementById("popupOverlay").style.display = "none";
-      updateLeaderboard();
     }
+    document.getElementById("usernameDisplay").innerText = "👤 " + username;
 
     let points = parseInt(localStorage.getItem("points")) || 0;
     let lucky = parseFloat(localStorage.getItem("lucky")) || 1.0;
@@ -205,11 +155,11 @@
     document.getElementById("luckyChance").innerText = `${lucky.toFixed(1)}x`;
 
     const cars = [
-      { name: "Toyota Supra", img: "https://upload.wikimedia.org/wikipedia/commons/f/f2/2019_Toyota_Supra_3.0_Front.jpg", rarity: "Epic" },
-      { name: "Honda Civic", img: "https://upload.wikimedia.org/wikipedia/commons/3/35/2022_Honda_Civic_Sport.jpg", rarity: "Common" },
-      { name: "Bugatti Chiron", img: "https://upload.wikimedia.org/wikipedia/commons/9/96/Bugatti_Chiron_IMG_0305.jpg", rarity: "Exotic" },
-      { name: "Koenigsegg Jesko", img: "https://upload.wikimedia.org/wikipedia/commons/c/c2/Koenigsegg_Jesko_IMG_0086.jpg", rarity: "Hacker" },
-      { name: "Mazda RX-7", img: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mazda_RX-7.jpg", rarity: "Legendary" }
+      { name: "Toyota Supra", img: "https://cdn.motor1.com/images/mgl/BEvvX/s3/toyota-supra.jpg", rarity: "Epic" },
+      { name: "Honda Civic", img: "https://cdn.motor1.com/images/mgl/jJZQ6/s3/2022-honda-civic-sedan.jpg", rarity: "Common" },
+      { name: "Bugatti Chiron", img: "https://cdn.motor1.com/images/mgl/qWj2E/s3/bugatti-chiron.jpg", rarity: "Exotic" },
+      { name: "Koenigsegg Jesko", img: "https://cdn.motor1.com/images/mgl/L1kpP/s3/koenigsegg-jesko.jpg", rarity: "Hacker" },
+      { name: "Mazda RX-7", img: "https://cdn.motor1.com/images/mgl/nV9zO/s3/mazda-rx-7.jpg", rarity: "Legendary" }
     ];
 
     function spinCar() {
@@ -223,7 +173,6 @@
       carImage.src = "";
       carRarity.innerText = "";
 
-      let spins = 0;
       const interval = setInterval(() => {
         const random = cars[Math.floor(Math.random() * cars.length)];
         carName.innerText = random.name;
@@ -272,8 +221,21 @@
       });
     }
 
-    function scrollToLeaderboard() {
-      document.getElementById("leaderboard").scrollIntoView({ behavior: 'smooth' });
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function sendChat(e) {
+      if (e.key === "Enter") {
+        const input = document.getElementById("chatInput");
+        const message = input.value.trim();
+        if (message) {
+          const chatBox = document.getElementById("chatMessages");
+          chatBox.innerHTML += `<div><b>${username}:</b> ${message}</div>`;
+          chatBox.scrollTop = chatBox.scrollHeight;
+          input.value = "";
+        }
+      }
     }
 
     setInterval(() => {

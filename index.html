@@ -2,88 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Car Spin Madness</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Spin Madness FULL</title>
   <style>
-    body { font-family: sans-serif; background: #121c2b; color: white; margin: 0; padding: 20px; }
-    .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    h1 { margin: 0; font-size: 24px; }
-    button { padding: 10px 20px; margin: 5px; background: #ff4444; border: none; color: white; border-radius: 5px; cursor: pointer; }
-    #carImage { width: 300px; border-radius: 10px; margin-top: 10px; }
-    #notification { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); background: #e74c3c; padding: 10px 20px; border-radius: 8px; display: none; }
+    body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; }
+    button { padding: 10px 20px; background: #ef4444; color: white; border: none; border-radius: 8px; margin: 5px; cursor: pointer; }
+    #carImage { width: 320px; border-radius: 10px; margin-top: 15px; box-shadow: 0 0 10px #000; }
+    #notification {
+      position: fixed; bottom: 10px; left: 50%;
+      transform: translateX(-50%); background: #e11d48;
+      padding: 10px 20px; border-radius: 8px; display: none;
+    }
+    .section { display: none; margin-top: 20px; text-align: center; }
+    .active { display: block; }
+    #chatBox { position: fixed; bottom: 10px; right: 10px; width: 250px; background: #1e293b; padding: 10px; border-radius: 10px; }
+    #chatMessages { height: 100px; overflow-y: auto; }
+    #chatInput { width: 100%; padding: 5px; border-radius: 5px; border: none; }
+    table { margin: auto; margin-top: 20px; width: 80%; border-collapse: collapse; }
+    th, td { padding: 8px; border-bottom: 1px solid #333; text-align: left; }
   </style>
 </head>
 <body>
-  <div class="top">
-    <div id="onlineStatus">Online now: 1 player</div>
-    <h1>🚗 Car Spin Madness</h1>
-    <div id="points">Points: 0</div>
+  <div class="topbar">
+    <div id="onlineStatus">Online: 1</div>
+    <div><strong>Car Spin Madness</strong></div>
+    <div id="points">Points: 0 | Luck: 1.0x</div>
   </div>
 
-  <div style="text-align:center;">
-    <button onclick="spinCar()">Spin Car</button>
-    <button onclick="upgrade()">Upgrade</button>
+  <div style="text-align:center; margin-top: 10px;">
+    <button onclick="showSection('main')">Home</button>
+    <button onclick="showSection('shop')">Shop</button>
+    <button onclick="showSection('leaderboard')">Leaderboard</button>
   </div>
 
-  <div style="text-align:center;margin-top:30px;">
-    <h2 id="carName">Ready?</h2>
-    <p id="rarityText"></p>
-    <img id="carImage" src="" alt="Car Image" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image';">
+  <div id="main" class="section active">
+    <button onclick="spinCar()">🎰 Spin Car</button>
+    <div id="carCard" style="margin-top:20px;">
+      <h2 id="carName">?</h2>
+      <p id="carRarity"></p>
+      <img id="carImage" src="" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'" alt="Car Image">
+    </div>
+  </div>
+
+  <div id="shop" class="section">
+    <h2>🛒 Shop</h2>
+    <p>Upgrade Lucky Chance for more rare cars!</p>
+    <button onclick="upgradeLuck()">Upgrade Luck (Cost: <span id='upgradeCost'>100</span> pts)</button>
+  </div>
+
+  <div id="leaderboard" class="section">
+    <h2>🏆 Leaderboards</h2>
+    <table>
+      <tr><th>#</th><th>Name</th><th>Points</th></tr>
+      <tr><td>1</td><td>Makonos</td><td id="lbPoints">0</td></tr>
+    </table>
+    <table>
+      <tr><th>#</th><th>Name</th><th>Time</th></tr>
+      <tr><td>1</td><td>Makonos</td><td id="lbTime">0s</td></tr>
+    </table>
+    <table>
+      <tr><th>#</th><th>Name</th><th>Luck</th></tr>
+      <tr><td>1</td><td>Makonos</td><td id="lbLuck">1.0x</td></tr>
+    </table>
   </div>
 
   <div id="notification"></div>
 
+  <div id="chatBox">
+    <div id="chatMessages"></div>
+    <input id="chatInput" placeholder="Say something..." onkeydown="sendChat(event)" />
+  </div>
+
   <script>
+    let points = 0, luck = 1.0, cost = 100, timeSpent = 0;
+    const badWords = ["fuck", "shit", "bitch", "ass", "hell"];
+
     const cars = [
-      { name: "Toyota Supra", rarity: "Common", image: "https://upload.wikimedia.org/wikipedia/commons/f/f2/2019_Toyota_Supra_3.0_Front.jpg", points: 1 },
-      { name: "Bugatti Chiron", rarity: "Exotic", image: "https://cdn.motor1.com/images/mgl/qWj2E/s3/bugatti-chiron.jpg", points: 25 },
-      { name: "Mystery ???", rarity: "???", image: "https://cdn.motor1.com/images/mgl/1xR8g/s1/mystery-car.jpg", points: 100 }
+      { name: "Supra", rarity: "Common", image: "https://upload.wikimedia.org/wikipedia/commons/f/f2/2019_Toyota_Supra_3.0_Front.jpg", points: 1 },
+      { name: "RX-7", rarity: "Legendary", image: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Mazda_RX-7.jpg", points: 10 },
+      { name: "Bugatti", rarity: "Exotic", image: "https://cdn.motor1.com/images/mgl/qWj2E/s3/bugatti-chiron.jpg", points: 25 },
+      { name: "Prototype ???", rarity: "???", image: "https://cdn.motor1.com/images/mgl/1xR8g/s1/mystery-car.jpg", points: 100 }
     ];
 
-    let points = 0;
-    let luck = 1.0;
-
-    function updatePoints() {
-      document.getElementById("points").innerText = "Points: " + points;
+    function update() {
+      document.getElementById("points").innerText = `Points: ${points} | Luck: ${luck.toFixed(1)}x`;
+      document.getElementById("upgradeCost").innerText = cost;
+      document.getElementById("lbPoints").innerText = points;
+      document.getElementById("lbLuck").innerText = luck.toFixed(1) + "x";
+      document.getElementById("lbTime").innerText = timeSpent + "s";
     }
 
-    function showNotification(msg) {
-      const n = document.getElementById("notification");
-      n.innerText = msg;
-      n.style.display = "block";
-      setTimeout(() => n.style.display = "none", 3000);
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
 
     function spinCar() {
-      const random = cars[Math.floor(Math.random() * cars.length)];
-      document.getElementById("carName").innerText = random.name;
-      document.getElementById("rarityText").innerText = random.rarity;
-      document.getElementById("carImage").src = random.image;
-      points += random.points;
-      updatePoints();
-
-      if (random.rarity === "???") {
-        showNotification("🔥 Someone pulled a ??? car!");
-      }
+      const car = cars[Math.floor(Math.random() * cars.length * luck) % cars.length];
+      document.getElementById("carName").innerText = car.name;
+      document.getElementById("carRarity").innerText = car.rarity;
+      document.getElementById("carImage").src = car.image;
+      points += car.points;
+      update();
+      if (car.rarity === "???") postChat("🔥 A player found ??? rarity!");
     }
 
-    function upgrade() {
-      if (points >= 100) {
-        points -= 100;
+    function upgradeLuck() {
+      if (points >= cost) {
+        points -= cost;
         luck += 0.1;
-        updatePoints();
-        showNotification("🔼 Luck upgraded!");
+        cost = Math.floor(cost * 1.5);
+        postChat("🔼 Luck upgraded!");
+        update();
       } else {
-        showNotification("❌ Not enough points.");
+        notify("Not enough points");
       }
     }
 
-    // Simuler online count
-    function updateOnline() {
-      document.getElementById("onlineStatus").innerText = "Online now: " + (Math.floor(Math.random() * 10) + 1) + " players";
+    function sendChat(e) {
+      if (e.key === "Enter") {
+        let msg = document.getElementById("chatInput").value.trim();
+        for (const w of badWords) msg = msg.replace(new RegExp(w, "gi"), "****");
+        if (msg) postChat("You: " + msg);
+        document.getElementById("chatInput").value = "";
+      }
     }
-    setInterval(updateOnline, 5000);
 
-    updatePoints();
+    function postChat(msg) {
+      const m = document.createElement("div");
+      m.innerText = msg;
+      document.getElementById("chatMessages").appendChild(m);
+      document.getElementById("chatMessages").scrollTop = 9999;
+    }
+
+    function notify(msg) {
+      const n = document.getElementById("notification");
+      n.innerText = msg; n.style.display = "block";
+      setTimeout(() => n.style.display = "none", 3000);
+    }
+
+    setInterval(() => {
+      timeSpent++; update();
+      document.getElementById("onlineStatus").innerText = "Online: " + (Math.floor(Math.random() * 5) + 1);
+    }, 1000);
+
+    update();
   </script>
 </body>
 </html>
